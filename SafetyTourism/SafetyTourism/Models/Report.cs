@@ -14,7 +14,8 @@ namespace SafetyTourism.Models
         public long NumInfected { get; set; }
 
         [Display(Name = "Report's Publishing Date")]
-        public DateTime CreationDate = DateTime.Now;
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy} Time: {0:HH:mm}")]
+        public DateTime CreationDate { get; set; }
 
         [ForeignKey("Destination")]
         [Display(Name = "Destination")]

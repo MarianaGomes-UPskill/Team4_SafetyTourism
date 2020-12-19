@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SafetyTourism.Data;
 
 namespace SafetyTourism.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201219204354_ReportDataUpdated")]
+    partial class ReportDataUpdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -250,8 +252,6 @@ namespace SafetyTourism.Data.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("CountryID");
-
                     b.ToTable("Destinations");
                 });
 
@@ -366,17 +366,6 @@ namespace SafetyTourism.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("SafetyTourism.Models.Destination", b =>
-                {
-                    b.HasOne("SafetyTourism.Models.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("SafetyTourism.Models.Report", b =>

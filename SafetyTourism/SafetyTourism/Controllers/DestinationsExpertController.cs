@@ -23,7 +23,7 @@ namespace SafetyTourism.Controllers
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Destinations.Include(r => r.Country);
-            return View(await _context.Destinations.ToListAsync());
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Destinations1/Details/5

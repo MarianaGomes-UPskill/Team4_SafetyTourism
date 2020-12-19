@@ -63,6 +63,7 @@ namespace SafetyTourism.Controllers
         {
             if (ModelState.IsValid)
             {
+                report.CreationDate = DateTime.Now;
                 _context.Add(report);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

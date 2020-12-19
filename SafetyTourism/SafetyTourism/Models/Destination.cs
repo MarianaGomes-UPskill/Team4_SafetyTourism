@@ -16,6 +16,6 @@ namespace SafetyTourism.Models
         [Display(Name = "Country")]
         public int CountryID { get; set; }
         
-        public Country Country;
+        public Country Country { get; set; }
     }
 }
