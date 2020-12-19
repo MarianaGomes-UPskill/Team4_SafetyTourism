@@ -11,9 +11,11 @@ namespace SafetyTourism.Models
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        public int CountryID { get; set; }
+
         [ForeignKey("Country")]
         [Display(Name = "Country")]
+        public int CountryID { get; set; }
+        
         public Country Country;
     }
 }
