@@ -54,4 +54,6 @@ namespace SafetyTourism.Data
             });
         }
     }
+
+   
 }
