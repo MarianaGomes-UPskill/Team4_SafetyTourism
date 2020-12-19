@@ -19,10 +19,41 @@ namespace SafetyTourism.Controllers
             _context = context;
         }
 
-        // GET: Diseases
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            return View(await _context.Diseases.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+            var diseases = from d in _context.Diseases
+                           select d;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                diseases = diseases.Where(d => d.Name.Contains(searchString));
+            }
+
+
+            if (sortOrder == "name_desc")
+            {
+                diseases = diseases.OrderByDescending(d => d.Name);
+            }
+            else
+            {
+                diseases = diseases.OrderBy(d => d.Name);
+            }
+
+            int pageSize = 3;
+            return View(await PaginatedList<Disease>.CreateAsync(diseases.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Diseases/Details/5
