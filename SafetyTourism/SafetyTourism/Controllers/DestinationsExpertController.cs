@@ -65,7 +65,7 @@ namespace SafetyTourism.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            
+            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name", destination.CountryID);
             return View(destination);
         }
 
@@ -119,7 +119,7 @@ namespace SafetyTourism.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name", destination.CountryID);
+            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "ID", destination.CountryID);
             return View(destination);
         }
 
