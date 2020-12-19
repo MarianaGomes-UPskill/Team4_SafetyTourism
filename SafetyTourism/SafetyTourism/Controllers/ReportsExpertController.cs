@@ -49,8 +49,8 @@ namespace SafetyTourism.Controllers
         // GET: ReportsExpert/Create
         public IActionResult Create()
         {
-            ViewData["DestinationID"] = new SelectList(_context.Destinations, "ID", "ID");
-            ViewData["DiseaseID"] = new SelectList(_context.Diseases, "ID", "ID");
+            ViewData["DestinationID"] = new SelectList(_context.Destinations, "ID", "Name");
+            ViewData["DiseaseID"] = new SelectList(_context.Diseases, "ID", "Name");
             return View();
         }
 
@@ -85,8 +85,8 @@ namespace SafetyTourism.Controllers
             {
                 return NotFound();
             }
-            ViewData["DestinationID"] = new SelectList(_context.Destinations, "ID", "ID", report.DestinationID);
-            ViewData["DiseaseID"] = new SelectList(_context.Diseases, "ID", "ID", report.DiseaseID);
+            ViewData["DestinationID"] = new SelectList(_context.Destinations, "ID", "Name", report.DestinationID);
+            ViewData["DiseaseID"] = new SelectList(_context.Diseases, "ID", "Name", report.DiseaseID);
             return View(report);
         }
 
