@@ -20,14 +20,21 @@ namespace SafetyTourism.Controllers
         }
 
         // GET: Countries
-        //public async Task<IActionResult> Index()
-        //{
-        //    return View(await _context.Countries.ToListAsync());
-        //}
 
-        public async Task<IActionResult> Index(string sortOrder, string searchString)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
             ViewData["CurrentFilter"] = searchString;
             var countries = from c in _context.Countries
                            select c;
@@ -45,8 +52,9 @@ namespace SafetyTourism.Controllers
             {
                 countries = countries.OrderBy(c => c.Name);
             }
-         
-            return View(await countries.AsNoTracking().ToListAsync());
+
+            int pageSize = 3;
+            return View(await PaginatedList<Country>.CreateAsync(countries.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Countries/Details/5
