@@ -12,7 +12,9 @@ namespace SafetyTourism.Models
         public int ID { get; set; }
         [Display(Name = "Number of Infected People")]
         public long NumInfected { get; set; }
-        public DateTime CreationDate { get; set; }
+
+        [Display(Name = "Report's Publishing Date")]
+        public DateTime CreationDate = DateTime.Now;
 
         [ForeignKey("Destination")]
         [Display(Name = "Destination")]

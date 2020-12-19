@@ -59,7 +59,7 @@ namespace SafetyTourism.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,NumInfected,CreationDate,DestinationID,DiseaseID")] Report report)
+        public async Task<IActionResult> Create([Bind("ID,NumInfected,DestinationID,DiseaseID")] Report report)
         {
             if (ModelState.IsValid)
             {
