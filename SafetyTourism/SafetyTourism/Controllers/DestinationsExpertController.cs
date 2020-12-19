@@ -22,6 +22,7 @@ namespace SafetyTourism.Controllers
         // GET: Destinations1
         public async Task<IActionResult> Index()
         {
+            var applicationDbContext = _context.Destinations.Include(r => r.Country);
             return View(await _context.Destinations.ToListAsync());
         }
 
@@ -34,6 +35,7 @@ namespace SafetyTourism.Controllers
             }
 
             var destination = await _context.Destinations
+                .Include(r => r.Country)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (destination == null)
             {
@@ -46,6 +48,7 @@ namespace SafetyTourism.Controllers
         // GET: Destinations1/Create
         public IActionResult Create()
         {
+            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name");
             return View();
         }
 
@@ -62,6 +65,7 @@ namespace SafetyTourism.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "ID", destination.CountryID);
             return View(destination);
         }
 
@@ -78,6 +82,7 @@ namespace SafetyTourism.Controllers
             {
                 return NotFound();
             }
+            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name", destination.CountryID);
             return View(destination);
         }
 
@@ -113,6 +118,7 @@ namespace SafetyTourism.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "ID", destination.CountryID);
             return View(destination);
         }
 
