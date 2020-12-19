@@ -20,9 +20,33 @@ namespace SafetyTourism.Controllers
         }
 
         // GET: Countries
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.Countries.ToListAsync());
+        //}
+
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
-            return View(await _context.Countries.ToListAsync());
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["CurrentFilter"] = searchString;
+            var countries = from c in _context.Countries
+                           select c;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                countries = countries.Where(c => c.Name.Contains(searchString));
+            }
+
+
+            if (sortOrder == "name_desc")
+            {
+                countries = countries.OrderByDescending(c => c.Name);
+            } else
+            {
+                countries = countries.OrderBy(c => c.Name);
+            }
+         
+            return View(await countries.AsNoTracking().ToListAsync());
         }
 
         // GET: Countries/Details/5
