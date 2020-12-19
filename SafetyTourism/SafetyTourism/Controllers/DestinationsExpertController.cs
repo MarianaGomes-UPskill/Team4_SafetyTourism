@@ -130,7 +130,7 @@ namespace SafetyTourism.Controllers
                 return NotFound();
             }
 
-            var destination = await _context.Destinations
+            var destination = await _context.Destinations.Include(r => r.Country)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (destination == null)
             {
