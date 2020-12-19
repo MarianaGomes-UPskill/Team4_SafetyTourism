@@ -22,7 +22,8 @@ namespace SafetyTourism.Controllers
         // GET: Destinations
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Destinations.ToListAsync());
+            var applicationDbContext = _context.Destinations.Include(r => r.Country);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Destinations/Details/5
@@ -33,8 +34,8 @@ namespace SafetyTourism.Controllers
                 return NotFound();
             }
 
-            var destination = await _context.Destinations
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var destination = _context.Destinations.Include(r => r.Country)
+                  .FirstOrDefaultAsync(m => m.ID == id);
             if (destination == null)
             {
                 return NotFound();
@@ -124,7 +125,7 @@ namespace SafetyTourism.Controllers
                 return NotFound();
             }
 
-            var destination = await _context.Destinations
+            var destination = await _context.Destinations.Include(r => r.Country)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (destination == null)
             {
