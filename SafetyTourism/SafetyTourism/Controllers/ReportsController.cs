@@ -20,10 +20,49 @@ namespace SafetyTourism.Controllers
         }
 
         // GET: Reports
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //    var applicationDbContext = _context.Reports.Include(r => r.Destination).Include(r => r.Disease);
+        //    return View(await applicationDbContext.ToListAsync());
+        //}
+
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var applicationDbContext = _context.Reports.Include(r => r.Destination).Include(r => r.Disease);
-            return View(await applicationDbContext.ToListAsync());
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DiseaseSortParm"] = sortOrder == "disease" ? "disease_desc" : "disease";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["NumInfecParm"] = sortOrder == "num_ascending" ? "num_desc" : "num_ascending";
+
+            var reports = _context.Reports.Include(r => r.Destination).Include(r => r.Disease).AsQueryable();
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    reports = reports.OrderByDescending(r => r.Destination.Name);
+                    break;
+                case "disease_desc":
+                    reports = reports.OrderByDescending(r => r.Disease.Name);
+                    break;
+                case "disease":
+                    reports = reports.OrderBy(r => r.Disease.Name);
+                    break;
+                case "num_desc":
+                    reports = reports.OrderByDescending(r => r.NumInfected);
+                    break;
+                case "num_ascending":
+                    reports = reports.OrderBy(r => r.NumInfected);
+                    break;
+                case "Date":
+                    reports = reports.OrderBy(r => r.CreationDate);
+                    break;
+                case "date_desc":
+                    reports = reports.OrderByDescending(r => r.CreationDate);
+                    break;
+                default:
+                    reports = reports.OrderBy(r => r.Destination.Name);
+                    break;
+            }
+            return View(await reports.AsNoTracking().ToListAsync());
         }
 
         // GET: Reports/Details/5
