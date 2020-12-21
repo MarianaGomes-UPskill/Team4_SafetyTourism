@@ -10,7 +10,8 @@ namespace SafetyTourismApi.Models
     public class Recomendation
     {
         public int RecomendationID { get; set; }
-        
+        public string Note { get; set; }
+
         [ForeignKey("GeoZone")]
         public int GeoZoneID { get; set; }
 
@@ -19,5 +20,7 @@ namespace SafetyTourismApi.Models
         public int ExpirationDate { get; set; }
 
         public GeoZone GeoZone { get; set; }
+
+        
     }
 }
