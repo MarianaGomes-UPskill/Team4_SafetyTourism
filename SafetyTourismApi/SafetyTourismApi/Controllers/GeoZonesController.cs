@@ -10,7 +10,7 @@ using SafetyTourismApi.Models;
 
 namespace SafetyTourismApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/GeoZones")]
     [ApiController]
     public class GeoZonesController : ControllerBase
     {
