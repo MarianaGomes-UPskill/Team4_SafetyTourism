@@ -42,6 +42,28 @@ namespace SafetyTourismApi.Controllers
             return outBreak;
         }
 
+        [Route("~/api/Countries/{CountryID}/Outbreaks")]
+        public async Task<ActionResult<IEnumerable<OutBreak>>> OutbreaksBYCountryID(int CountryID)
+        {
+            var result = await _context.GeoZones.FindAsync(CountryID);
+            var batata = _context.OutBreaks.Where(m => m.GeoZoneID == result.GeoZoneID);
+
+            return !batata.Any() ? NotFound() : (ActionResult<IEnumerable<OutBreak>>)await batata.ToListAsync();
+        }
+
+        //Get: bataMax outbreaks activos 
+
+        [Route("~/api/Outbreaks/Viruses/{VirusID}")]
+        public async Task<ActionResult<IEnumerable<OutBreak>>> OutrbreaksBYVIRUSID(int VirusID)
+        {
+
+            var batata = _context.OutBreaks.Where(d => d.VirusID == VirusID);
+            var batataMax = batata.Where(n => n.EndDate == null);
+
+            return !batataMax.Any() ? NotFound() : (ActionResult<IEnumerable<OutBreak>>)await batataMax.ToListAsync();
+        }
+
+
         // PUT: api/OutBreaks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

@@ -34,12 +34,15 @@ namespace SafetyTourismApi.Controllers
         {
             var recomendation = await _context.Recomendations.FindAsync(id);
 
-            if (recomendation == null)
-            {
-                return NotFound();
-            }
+            return recomendation == null ? NotFound() : (ActionResult<Recomendation>)recomendation;
+        }
+        [Route("~/api/Countries/{CountryID}/Recomendations")]
+        public async Task<ActionResult<IEnumerable<Recomendation>>> RecomendationBYCountryID(int CountryID)
+        {
+            var result = await _context.GeoZones.FindAsync(CountryID);
+            var batata = _context.Recomendations.Where(m => m.GeoZoneID == result.GeoZoneID);
 
-            return recomendation;
+            return !batata.Any() ? NotFound() : (ActionResult<IEnumerable<Recomendation>>)await batata.ToListAsync();
         }
 
         // PUT: api/Recomendations/5
