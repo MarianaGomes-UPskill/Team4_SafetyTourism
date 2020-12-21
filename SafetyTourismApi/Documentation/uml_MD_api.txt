@@ -20,6 +20,7 @@ class Recom{
   -long GeoZoneID
   -DateTime CreationDate
   -int ExpirationDate
+  -string Note
 }
 
 class Outbreak {
