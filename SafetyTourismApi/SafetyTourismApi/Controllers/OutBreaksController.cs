@@ -10,7 +10,7 @@ using SafetyTourismApi.Models;
 
 namespace SafetyTourismApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/OutBreaks")]
     [ApiController]
     public class OutBreaksController : ControllerBase
     {
