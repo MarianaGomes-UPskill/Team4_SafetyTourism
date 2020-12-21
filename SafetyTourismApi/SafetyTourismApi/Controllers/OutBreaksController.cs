@@ -10,7 +10,7 @@ using SafetyTourismApi.Models;
 
 namespace SafetyTourismApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/outbreaks")]
     [ApiController]
     public class OutBreaksController : ControllerBase
     {
@@ -97,6 +97,27 @@ namespace SafetyTourismApi.Controllers
             return NoContent();
         }
 
+        [Route ("/api/outbreaks/{GeoZoneID}/{VirusID}/")]
+        public async Task<IActionResult> PutOutBreakEndDate(int GeoZoneID, int VirusID, bodyDTO dto)
+        {
+            var geozone = _context.GeoZones.Where(g => g.GeoZoneID == GeoZoneID);
+            var virus = _context.Viruses.Where(v => v.VirusID == VirusID);
+            if (geozone.Count() <= 0 || virus.Count() <= 0)
+            {
+                return NotFound();
+            }
+
+            var outbreak = _context.OutBreaks.First(o => o.GeoZoneID == GeoZoneID && o.VirusID == VirusID);
+            if (outbreak != null)
+            {
+                outbreak.EndDate = dto.endDate;
+            }
+
+                       
+                await _context.SaveChangesAsync();
+            
+            return NoContent();
+        }
         // POST: api/OutBreaks
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
