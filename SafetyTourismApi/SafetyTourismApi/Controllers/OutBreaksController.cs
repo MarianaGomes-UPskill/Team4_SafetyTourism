@@ -95,6 +95,15 @@ namespace SafetyTourismApi.Controllers
             return NoContent();
         }
 
+        [Route("~/api/Viruses/{VirusID}/OutBreaks")]
+        public async Task<ActionResult<IEnumerable<OutBreak>>> GetOutBreaksByVirusID(int VirusID)
+        {
+            var result = await _context.OutBreaks.FindAsync(VirusID);
+            var outbreakVirus = _context.OutBreaks.Where(o => o.VirusID == result.VirusID);
+
+            return !outbreakVirus.Any() ? NotFound() : (ActionResult<IEnumerable<OutBreak>>)await outbreakVirus.ToListAsync();
+        }
+
         // POST: api/OutBreaks
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
