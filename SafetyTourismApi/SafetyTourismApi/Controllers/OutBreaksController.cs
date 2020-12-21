@@ -25,22 +25,24 @@ namespace SafetyTourismApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OutBreak>>> GetOutBreaks()
         {
-            return await _context.OutBreaks.ToListAsync();
+            return await _context.OutBreaks.Include(i => i.GeoZone).Include(n => n.Virus).ToListAsync();
         }
 
         // GET: api/OutBreaks/5
         [HttpGet("{id}")]
         public async Task<ActionResult<OutBreak>> GetOutBreak(int id)
         {
-            var outBreak = await _context.OutBreaks.FindAsync(id);
+            var outBreak =  _context.OutBreaks.Include(n=>n.Virus).Include(m=>m.GeoZone).Where(m => m.OutBreakID == id);
 
             if (outBreak == null)
             {
                 return NotFound();
             }
 
-            return outBreak;
+            return await outBreak.SingleOrDefaultAsync();
         }
+
+        //Get: batata oubreaks por country
 
         [Route("~/api/Countries/{CountryID}/Outbreaks")]
         public async Task<ActionResult<IEnumerable<OutBreak>>> OutbreaksBYCountryID(int CountryID)
@@ -48,19 +50,19 @@ namespace SafetyTourismApi.Controllers
             var result = await _context.GeoZones.FindAsync(CountryID);
             var batata = _context.OutBreaks.Where(m => m.GeoZoneID == result.GeoZoneID);
 
-            return !batata.Any() ? NotFound() : (ActionResult<IEnumerable<OutBreak>>)await batata.ToListAsync();
+            return !batata.Any() ? NotFound() : (ActionResult<IEnumerable<OutBreak>>)await batata.Include(i => i.GeoZone).Include(n => n.Virus).ToListAsync();
         }
 
-        //Get: bataMax outbreaks activos 
+        //Get: batataMax outbreaks activos 
 
         [Route("~/api/Outbreaks/Viruses/{VirusID}")]
-        public async Task<ActionResult<IEnumerable<OutBreak>>> OutrbreaksBYVIRUSID(int VirusID)
+        public async Task<ActionResult<IEnumerable<OutBreak>>> VirusesBYEndDate(int VirusID)
         {
 
             var batata = _context.OutBreaks.Where(d => d.VirusID == VirusID);
             var batataMax = batata.Where(n => n.EndDate == null);
 
-            return !batataMax.Any() ? NotFound() : (ActionResult<IEnumerable<OutBreak>>)await batataMax.ToListAsync();
+            return !batataMax.Any() ? NotFound() : (ActionResult<IEnumerable<OutBreak>>)await batataMax.Include(i => i.GeoZone).Include(n => n.Virus).ToListAsync();
         }
 
 
