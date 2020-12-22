@@ -25,24 +25,24 @@ namespace SafetyTourismApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Recomendation>>> GetRecomendations()
         {
-            return await _context.Recomendations.Include(r => r.GeoZone).ToListAsync();
+            return await _context.Recomendations.Include(r => r.GeoZone).ThenInclude(r => r.Countries).ToListAsync();
         }
 
         // GET: api/Recomendations/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Recomendation>> GetRecomendation(int id)
         {
-            var recomendation = _context.Recomendations.Include(r => r.GeoZone).Where(r => r.RecomendationID == id);
+            var recomendation = _context.Recomendations.Include(r => r.GeoZone).ThenInclude(r => r.Countries).Where(r => r.RecomendationID == id);
 
             return recomendation == null ? NotFound() : (ActionResult<Recomendation>)await recomendation.SingleOrDefaultAsync();
         }
         [Route("~/api/Countries/{CountryID}/Recomendations")]
-        public async Task<ActionResult<IEnumerable<Recomendation>>> GetRecomendationBYCountryID(int CountryID)
+        public async Task<ActionResult<IEnumerable<Recomendation>>> GetRecomendationByCountryID(int CountryID)
         {
             var result = await _context.GeoZones.FindAsync(CountryID);
-            var batata = _context.Recomendations.Include(r => r.GeoZone).Where(m => m.GeoZoneID == result.GeoZoneID);
+            var recomendations = _context.Recomendations.Include(r => r.GeoZone).ThenInclude(r => r.Countries).Where(m => m.GeoZoneID == result.GeoZoneID);
 
-            return !batata.Any() ? NotFound() : (ActionResult<IEnumerable<Recomendation>>)await batata.ToListAsync();
+            return !recomendations.Any() ? NotFound() : (ActionResult<IEnumerable<Recomendation>>)await recomendations.ToListAsync();
         }
 
         // PUT: api/Recomendations/5

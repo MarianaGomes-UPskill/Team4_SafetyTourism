@@ -30,7 +30,7 @@ namespace SafetyTourismApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<OutBreak>> GetOutBreak(int id)
         {
-            var outBreak = _context.OutBreaks.Include(n => n.Virus).Include(m => m.GeoZone).Where(m => m.OutBreakID == id);
+            var outBreak = _context.OutBreaks.Include(n => n.Virus).Include(m => m.GeoZone).ThenInclude(p => p.Countries).Where(m => m.OutBreakID == id);
 
             return outBreak == null ? NotFound() : (ActionResult<OutBreak>)await outBreak.SingleOrDefaultAsync();
         }
@@ -41,21 +41,21 @@ namespace SafetyTourismApi.Controllers
         public async Task<ActionResult<IEnumerable<OutBreak>>> GetOutbreaksBYCountryID(int CountryID)
         {
             var result = await _context.GeoZones.FindAsync(CountryID);
-            var batata = _context.OutBreaks.Where(m => m.GeoZoneID == result.GeoZoneID);
+            var outbreaks = _context.OutBreaks.Where(m => m.GeoZoneID == result.GeoZoneID);
 
-            return !batata.Any() ? NotFound() : (ActionResult<IEnumerable<OutBreak>>)await batata.Include(i => i.GeoZone).Include(n => n.Virus).ToListAsync();
+            return !outbreaks.Any() ? NotFound() : (ActionResult<IEnumerable<OutBreak>>)await outbreaks.Include(i => i.GeoZone).ThenInclude(p => p.Countries).Include(n => n.Virus).ToListAsync();
         }
 
         //Get: batataMax outbreaks activos 
 
         [Route("~/api/Outbreaks/Viruses/{VirusID}")]
-        public async Task<ActionResult<IEnumerable<OutBreak>>> GetVirusesByEndDate(int VirusID)
+        public async Task<ActionResult<IEnumerable<OutBreak>>> GetActiveOutbreaks(int VirusID)
         {
 
             var batata = _context.OutBreaks.Where(d => d.VirusID == VirusID);
-            var batataMax = batata.Where(n => n.EndDate == null);
+            var outbreaks = batata.Where(n => n.EndDate == null);
 
-            return !batataMax.Any() ? NotFound() : (ActionResult<IEnumerable<OutBreak>>)await batataMax.Include(i => i.GeoZone).Include(n => n.Virus).ToListAsync();
+            return !outbreaks.Any() ? NotFound() : (ActionResult<IEnumerable<OutBreak>>)await outbreaks.Include(i => i.GeoZone).ThenInclude(p => p.Countries).Include(n => n.Virus).ToListAsync();
         }
 
 
@@ -95,6 +95,7 @@ namespace SafetyTourismApi.Controllers
         {
             var geozone = _context.GeoZones.Where(g => g.GeoZoneID == GeoZoneID);
             var virus = _context.Viruses.Where(v => v.VirusID == VirusID);
+
             if (geozone.Count() <= 0 || virus.Count() <= 0)
             {
                 return NotFound();
