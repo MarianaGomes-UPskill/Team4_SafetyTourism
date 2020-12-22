@@ -119,7 +119,7 @@ namespace SafetyTourismApi.Controllers
             _context.OutBreaks.Add(outBreak);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOutBreak", new { id = outBreak.OutBreakID }, outBreak);
+            return CreatedAtAction(nameof(GetOutBreak), new { id = outBreak.OutBreakID }, outBreak);
         }
 
         // DELETE: api/OutBreaks/5

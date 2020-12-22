@@ -76,7 +76,7 @@ namespace SafetyTourismApi.Controllers
             _context.GeoZones.Add(geoZone);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetGeoZone", new { id = geoZone.GeoZoneID }, geoZone);
+            return CreatedAtAction(nameof(GetGeoZoneByID), new { id = geoZone.GeoZoneID }, geoZone);
         }
 
         // DELETE: api/GeoZones/5
