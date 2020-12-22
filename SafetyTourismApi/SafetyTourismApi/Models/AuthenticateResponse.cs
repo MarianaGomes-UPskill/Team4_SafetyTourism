@@ -1,4 +1,4 @@
-﻿using SafetyTourismApi.Entities;
+﻿using WebApi.Entities;
 
 namespace SafetyTourismApi.Models
 {

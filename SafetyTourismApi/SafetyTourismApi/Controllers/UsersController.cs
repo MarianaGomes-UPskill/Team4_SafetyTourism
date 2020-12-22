@@ -2,9 +2,12 @@
 using SafetyTourismApi.Models;
 using SafetyTourismApi.Services;
 using Microsoft.AspNetCore.Authorization;
+using WebApi.Entities;
+using WebApi.Models;
 
 namespace SafetyTourismApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -16,23 +19,40 @@ namespace SafetyTourismApi.Controllers
             _userService = userService;
         }
 
+        [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate(AuthenticateRequest model)
+        public IActionResult Authenticate([FromBody] AuthenticateModel model)
         {
-            var response = _userService.Authenticate(model);
+            var user = _userService.Authenticate(model.Username, model.Password);
 
-            if (response == null)
+            if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
-            return Ok(response);
+            return Ok(user);
         }
 
-        [Authorize]
+        [Authorize(Roles = Role.Admin)]
         [HttpGet]
         public IActionResult GetAll()
         {
             var users = _userService.GetAll();
             return Ok(users);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            // only allow admins to access other user records
+            var currentUserId = int.Parse(User.Identity.Name);
+            if (id != currentUserId && !User.IsInRole(Role.Admin))
+                return Forbid();
+
+            var user = _userService.GetById(id);
+
+            if (user == null)
+                return NotFound();
+
+            return Ok(user);
         }
     }
 }
