@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
 using SafetyTourismApi.Data;
 
 namespace SafetyTourismApi
@@ -21,8 +21,12 @@ namespace SafetyTourismApi
         public void ConfigureServices(IServiceCollection services)
         {
 
-             services.AddDbContext<WHOContext>(opt =>
-                                               opt.UseInMemoryDatabase("WHOList"));
+            services.AddDbContext<WHOContext>(opt =>
+                                              opt.UseInMemoryDatabase("WHOList"));
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
             services.AddControllers();
 

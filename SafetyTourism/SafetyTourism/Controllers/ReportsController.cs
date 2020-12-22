@@ -26,7 +26,7 @@ namespace SafetyTourism.Controllers
         //    return View(await applicationDbContext.ToListAsync());
         //}
 
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DiseaseSortParm"] = sortOrder == "disease" ? "disease_desc" : "disease";

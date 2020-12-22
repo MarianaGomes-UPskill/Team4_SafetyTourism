@@ -25,21 +25,16 @@ namespace SafetyTourismApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GeoZone>>> GetGeoZones()
         {
-            return await _context.GeoZones.ToListAsync();
+            return await _context.GeoZones.Include(g => g.Countries).ToListAsync();
         }
 
         // GET: api/GeoZones/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<GeoZone>> GetGeoZone(int id)
+        public async Task<ActionResult<GeoZone>> GetGeoZoneByID(int id)
         {
-            var geoZone = await _context.GeoZones.FindAsync(id);
+            var geozone = _context.GeoZones.Include(g => g.Countries).Where(g => g.GeoZoneID == id);
 
-            if (geoZone == null)
-            {
-                return NotFound();
-            }
-
-            return geoZone;
+            return geozone == null ? NotFound() : (ActionResult<GeoZone>)await geozone.SingleOrDefaultAsync();
         }
 
         // PUT: api/GeoZones/5

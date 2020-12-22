@@ -12,10 +12,6 @@ namespace SafetyTourismApi.Models
 
         public string GeoZoneName { get; set; }
 
-        [ForeignKey("Country")]
-        public int CountryID { get; set; }
         public List<Country> Countries { get; set; }
-
-       
     }
 }

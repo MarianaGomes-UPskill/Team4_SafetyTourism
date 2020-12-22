@@ -34,12 +34,7 @@ namespace SafetyTourismApi.Controllers
         {
             var virus = await _context.Viruses.FindAsync(id);
 
-            if (virus == null)
-            {
-                return NotFound();
-            }
-
-            return virus;
+            return virus == null ? NotFound() : (ActionResult<Virus>)virus;
         }
 
         // PUT: api/Viruses/5
