@@ -13,7 +13,5 @@ namespace SafetyTourismApi.Models
 
         [Required]
         public string Password { get; set; }
-
-        public string EmailAddress { get; set; }
     }
 }
