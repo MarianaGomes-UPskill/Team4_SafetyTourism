@@ -84,7 +84,7 @@ namespace SafetyTourismApi.Controllers
             _context.Recomendations.Add(recomendation);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetRecomendation", new { id = recomendation.RecomendationID }, recomendation);
+            return CreatedAtAction(nameof(GetRecomendation), new { id = recomendation.RecomendationID }, recomendation);
         }
 
         // DELETE: api/Recomendations/5

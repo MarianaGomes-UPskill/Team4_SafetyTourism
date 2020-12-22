@@ -76,7 +76,7 @@ namespace SafetyTourismApi.Controllers
             _context.Viruses.Add(virus);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetVirus", new { id = virus.VirusID }, virus);
+            return CreatedAtAction(nameof(GetVirus), new { id = virus.VirusID }, virus);
         }
 
         // DELETE: api/Viruses/5
