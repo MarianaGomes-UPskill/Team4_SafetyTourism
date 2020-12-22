@@ -23,7 +23,7 @@ namespace SafetyTourismApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OutBreak>>> GetOutBreaks()
         {
-            return await _context.OutBreaks.Include(i => i.GeoZone).Include(n => n.Virus).ToListAsync();
+            return await _context.OutBreaks.Include(i => i.GeoZone).ThenInclude(p => p.Countries).Include(n => n.Virus).ToListAsync();
         }
 
         // GET: api/OutBreaks/5
