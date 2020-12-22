@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace SafetyTourismApi.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiController]
+    [Route("[controller]")]
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
