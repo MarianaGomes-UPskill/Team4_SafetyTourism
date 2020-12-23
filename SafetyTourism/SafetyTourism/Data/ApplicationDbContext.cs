@@ -14,19 +14,20 @@ namespace SafetyTourism.Data
             : base(options)
         {
         }
+        public DbSet<GeoZone> GeoZones { get; set; }
+        public DbSet<Virus> Viruses { get; set; }
         public DbSet<Country> Countries { get; set; }
-        public DbSet<Disease> Diseases { get; set; }
-        public DbSet<Destination> Destinations { get; set; }
-        public DbSet<Report> Reports { get; set; }
+        public DbSet<OutBreak> OutBreaks { get; set; }
+        public DbSet<Recomendation> Recomendations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             
             base.OnModelCreating(modelBuilder);
             modelBuilder.HasDefaultSchema("Identity");
-            modelBuilder.Entity<Employee>(entity =>
+            modelBuilder.Entity<User>(entity =>
             {
-                entity.ToTable(name: "Employee");
+                entity.ToTable(name: "User");
             });
             modelBuilder.Entity<IdentityRole>(entity =>
             {

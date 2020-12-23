@@ -1,0 +1,45 @@
+﻿@model SafetyTourism.Models.OutBreak
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>OutBreak</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.GeoZone)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.GeoZone.GeoZoneName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Virus)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Virus.VirusName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.OutBreakID">Edit</a> | 
+        <a asp-action="Delete" asp-route-id="@Model.OutBreakID">Delete</a>
+     | 
+    <a asp-action="Index">Back to List</a>
+</div>

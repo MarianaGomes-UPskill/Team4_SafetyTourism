@@ -1,0 +1,51 @@
+﻿@model IEnumerable<SafetyTourism.Models.OutBreak>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<style>
+    .tablehover:hover {
+        background-color: cornsilk;
+        -moz-box-shadow: inherit;
+        -webkit-box-shadow: inherit;
+        box-shadow: inherit;
+        text-shadow:inherit;
+        cursor:pointer;
+        text-decoration:double;
+        font-style:italic;
+    }
+</style>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.GeoZone)
+            </th>
+            <th style="text-align:right">
+                @Html.DisplayNameFor(model => model.Virus)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="tablehover" onclick="location.href = '@Url.Action("Details", new { id=item.OutBreakID })'">
+                <td>
+                    @Html.DisplayFor(modelItem => item.GeoZone.GeoZoneName)
+                </td>
+                <td style="text-align:right;">
+                    @Html.DisplayFor(modelItem => item.Virus.VirusName)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p style="text-align:right;">
+    <a style="color:red; font-size:18px" asp-action="Create">Create New</a>
+</p>

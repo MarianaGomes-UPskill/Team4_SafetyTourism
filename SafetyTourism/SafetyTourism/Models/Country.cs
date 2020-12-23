@@ -9,9 +9,13 @@ namespace SafetyTourism.Models
 {
     public class Country
     {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public List<Destination> DestinationsList;
+        public int CountryID { get; set; }
+        public string CountryName { get; set; }
 
+        [ForeignKey("GeoZone")]
+        [Display(Name = "GeoZone")]
+        public int GeoZoneID { get; set; }
+        
+        public GeoZone GeoZone { get; set; }
     }
 }

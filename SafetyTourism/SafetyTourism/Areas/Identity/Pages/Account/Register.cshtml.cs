@@ -45,12 +45,6 @@ namespace SafetyTourism.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "userName")]
-            public string userName{ get; set; }
-
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]

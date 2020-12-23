@@ -20,41 +20,10 @@ namespace SafetyTourism.Controllers
         }
 
         // GET: Countries
-
-        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
+        public async Task<IActionResult> Index()
         {
-            ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-
-            if (searchString != null)
-            {
-                pageNumber = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-
-            ViewData["CurrentFilter"] = searchString;
-            var countries = from c in _context.Countries
-                           select c;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                countries = countries.Where(c => c.Name.Contains(searchString));
-            }
-
-
-            if (sortOrder == "name_desc")
-            {
-                countries = countries.OrderByDescending(c => c.Name);
-            } else
-            {
-                countries = countries.OrderBy(c => c.Name);
-            }
-
-            int pageSize = 3;
-            return View(await PaginatedList<Country>.CreateAsync(countries.AsNoTracking(), pageNumber ?? 1, pageSize));
+            var applicationDbContext = _context.Countries.Include(c => c.GeoZone);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Countries/Details/5
@@ -66,7 +35,8 @@ namespace SafetyTourism.Controllers
             }
 
             var country = await _context.Countries
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .Include(c => c.GeoZone)
+                .FirstOrDefaultAsync(m => m.CountryID == id);
             if (country == null)
             {
                 return NotFound();
@@ -78,6 +48,7 @@ namespace SafetyTourism.Controllers
         // GET: Countries/Create
         public IActionResult Create()
         {
+            ViewData["GeoZone"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName");
             return View();
         }
 
@@ -86,7 +57,7 @@ namespace SafetyTourism.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name")] Country country)
+        public async Task<IActionResult> Create([Bind("CountryID,CountryName,GeoZoneID")] Country country)
         {
             if (ModelState.IsValid)
             {
@@ -94,6 +65,7 @@ namespace SafetyTourism.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName", country.GeoZoneID);
             return View(country);
         }
 
@@ -110,6 +82,7 @@ namespace SafetyTourism.Controllers
             {
                 return NotFound();
             }
+            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName", country.GeoZoneID);
             return View(country);
         }
 
@@ -118,9 +91,9 @@ namespace SafetyTourism.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name")] Country country)
+        public async Task<IActionResult> Edit(int id, [Bind("CountryID,CountryName,GeoZoneID")] Country country)
         {
-            if (id != country.ID)
+            if (id != country.CountryID)
             {
                 return NotFound();
             }
@@ -134,7 +107,7 @@ namespace SafetyTourism.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CountryExists(country.ID))
+                    if (!CountryExists(country.CountryID))
                     {
                         return NotFound();
                     }
@@ -145,6 +118,7 @@ namespace SafetyTourism.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName", country.GeoZoneID);
             return View(country);
         }
 
@@ -157,7 +131,8 @@ namespace SafetyTourism.Controllers
             }
 
             var country = await _context.Countries
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .Include(c => c.GeoZone)
+                .FirstOrDefaultAsync(m => m.CountryID == id);
             if (country == null)
             {
                 return NotFound();
@@ -179,7 +154,7 @@ namespace SafetyTourism.Controllers
 
         private bool CountryExists(int id)
         {
-            return _context.Countries.Any(e => e.ID == id);
+            return _context.Countries.Any(e => e.CountryID == id);
         }
     }
 }
