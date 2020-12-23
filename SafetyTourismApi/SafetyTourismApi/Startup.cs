@@ -10,7 +10,7 @@ using SafetyTourismApi.Data;
 using SafetyTourismApi.Helpers;
 using SafetyTourismApi.Services;
 using System.Text;
-using SafetyTourismApi.Helpers;
+
 
 namespace SafetyTourismApi
 {
@@ -29,7 +29,16 @@ namespace SafetyTourismApi
             services.AddDbContext<WHOContext>(opt =>
                                               opt.UseInMemoryDatabase("WHOList"));
 
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("MyAllowSpecificOrigins",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200",
+                                        "http://SafetyTourism");
+                });
+            });
+
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
@@ -66,7 +75,8 @@ namespace SafetyTourismApi
             app.UseRouting();
 
             // global cors policy
-            app.UseCors(x => x
+            app.UseCors("MyAllowSpecificOrigins");
+            app.UseCors( x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
