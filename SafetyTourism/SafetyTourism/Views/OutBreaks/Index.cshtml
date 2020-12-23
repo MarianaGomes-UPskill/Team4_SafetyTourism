@@ -34,14 +34,14 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr class="tablehover" onclick="location.href = '@Url.Action("Details", new { id=item.OutBreakID })'">
-                <td>
-                    @Html.DisplayFor(modelItem => item.GeoZone.GeoZoneName)
-                </td>
-                <td style="text-align:right;">
-                    @Html.DisplayFor(modelItem => item.Virus.VirusName)
-                </td>
-            </tr>
+        <tr class="tablehover" onclick="location.href = '@Url.Action("Details", new { id=item.OutBreakID })'">
+            <td>
+                @Html.DisplayFor(modelItem => item.GeoZone.GeoZoneName)
+            </td>
+            <td style="text-align:right;">
+                @Html.DisplayFor(modelItem => item.Virus.VirusName)
+            </td>
+        </tr>
         }
     </tbody>
 </table>

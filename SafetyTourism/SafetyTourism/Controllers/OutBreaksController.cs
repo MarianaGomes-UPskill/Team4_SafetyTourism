@@ -49,8 +49,8 @@ namespace SafetyTourism.Controllers
         // GET: OutBreaks/Create
         public IActionResult Create()
         {
-            ViewData["Virus"] = new SelectList(_context.Viruses, "VirusID", "VirusName");
-            ViewData["GeoZone"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName");
+            ViewData["VirusID"] = new SelectList(_context.Viruses, "VirusID", "VirusName");
+            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName");
             return View();
         }
 
@@ -67,8 +67,8 @@ namespace SafetyTourism.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Virus"] = new SelectList(_context.Viruses, "VirusID", "VirusName", outBreak.VirusID);
-            ViewData["GeoZone"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName");
+            ViewData["VirusID"] = new SelectList(_context.Viruses, "VirusID", "VirusName", outBreak.VirusID);
+            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName");
             return View(outBreak);
         }
 
@@ -122,8 +122,8 @@ namespace SafetyTourism.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Virus"] = new SelectList(_context.Viruses, "VirusID", "VirusName", outBreak.VirusID);
-            ViewData["GeoZone"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName", outBreak.GeoZoneID);
+            ViewData["VirusID"] = new SelectList(_context.Viruses, "VirusID", "VirusName", outBreak.VirusID);
+            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName", outBreak.GeoZoneID);
             return View(outBreak);
         }
 
