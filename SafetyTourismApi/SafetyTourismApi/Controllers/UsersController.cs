@@ -2,7 +2,8 @@
 using SafetyTourismApi.Models;
 using SafetyTourismApi.Services;
 using Microsoft.AspNetCore.Authorization;
-using SafetyTourismApi.Entities;
+using WebApi.Entities;
+using WebApi.Models;
 
 namespace SafetyTourismApi.Controllers
 {
@@ -41,6 +42,7 @@ namespace SafetyTourismApi.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
+            // only allow admins to access other user records
             var currentUserId = int.Parse(User.Identity.Name);
             if (id != currentUserId && !User.IsInRole(Role.Admin))
                 return Forbid();

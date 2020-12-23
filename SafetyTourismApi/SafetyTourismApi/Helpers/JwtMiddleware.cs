@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using SafetyTourismApi.Services;
-using SafetyTourismApi.Helpers;
+using WebApi.Helpers;
 
 namespace SafetyTourismApi.Helpers
 {

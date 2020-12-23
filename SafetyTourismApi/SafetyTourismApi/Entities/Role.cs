@@ -1,4 +1,4 @@
-﻿namespace SafetyTourismApi.Entities
+﻿namespace WebApi.Entities
 {
     public static class Role
     {

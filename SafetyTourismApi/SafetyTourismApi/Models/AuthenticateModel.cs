@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SafetyTourismApi.Models
+namespace WebApi.Models
 {
     public class AuthenticateModel
     {
