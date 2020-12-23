@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using WebApi.Entities;
+using SafetyTourismApi.Entities;
 
-namespace WebApi.Helpers
+namespace SafetyTourismApi.Helpers
 {
     public static class ExtensionMethods
     {
