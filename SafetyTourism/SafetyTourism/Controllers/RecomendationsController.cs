@@ -48,7 +48,7 @@ namespace SafetyTourism.Controllers
         // GET: Recomendations/Create
         public IActionResult Create()
         {
-            ViewData["GeoZone"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName");
+            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName");
             return View();
         }
 
@@ -65,7 +65,7 @@ namespace SafetyTourism.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName", recomendation.GeoZoneID);
+            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName");
             return View(recomendation);
         }
 
@@ -118,7 +118,7 @@ namespace SafetyTourism.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneID", recomendation.GeoZoneID);
+            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName", recomendation.GeoZoneID);
             return View(recomendation);
         }
 
