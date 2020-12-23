@@ -24,9 +24,7 @@ namespace SafetyTourismApi.Models
 
         #nullable enable
         public DateTime? EndDate { get; set; }
-        #nullable disable
-
-       
+        #nullable disable       
 
     }
 }
