@@ -16,13 +16,10 @@
             <th>
                 @Html.DisplayNameFor(model => model.Note)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreationDate)
-            </th>
-            <th>
+            <th style="text-align:center;">
                 @Html.DisplayNameFor(model => model.ExpirationDate)
             </th>
-            <th>
+            <th style="text-align:right;">
                 @Html.DisplayNameFor(model => model.GeoZone)
             </th>
             <th></th>
@@ -30,23 +27,15 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr class="tablehover" onclick="location.href = '@Url.Action("Details", new { id=item.RecomendationID })'">
             <td>
                 @Html.DisplayFor(modelItem => item.Note)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreationDate)
+            <td style="text-align:center; background-color:rgba(0, 148, 255,0.5)">
+                @Html.DisplayFor(modelItem => item.ExpirationDate) days
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpirationDate)<p>days</p>
-            </td>
-            <td>
+            <td style="text-align:right;">
                 @Html.DisplayFor(modelItem => item.GeoZone.GeoZoneName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.RecomendationID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.RecomendationID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.RecomendationID">Delete</a>
             </td>
         </tr>
 }

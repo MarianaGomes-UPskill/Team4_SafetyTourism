@@ -16,7 +16,7 @@
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Country Name</a>
             </th>
-            <th>
+            <th style="text-align:right;">
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["GeoZoneSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">GeoZone Name</a>
             </th>
             <th></th>
@@ -25,16 +25,11 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <td class="tablehover" onclick="location.href = '@Url.Action("Details", new { id=item.CountryID })'">
                 @Html.DisplayFor(modelItem => item.CountryName)
             </td>
-            <td>
+            <td style="text-align:right;">
                 @Html.DisplayFor(modelItem => item.GeoZone.GeoZoneName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CountryID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CountryID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CountryID">Delete</a>
             </td>
         </tr>
 }

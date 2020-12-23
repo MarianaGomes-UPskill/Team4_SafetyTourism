@@ -24,5 +24,6 @@ namespace SafetyTourism.Models
 #nullable disable
         public Virus Virus { get; set; }
         public GeoZone GeoZone { get; set; }
+        
     }
 }

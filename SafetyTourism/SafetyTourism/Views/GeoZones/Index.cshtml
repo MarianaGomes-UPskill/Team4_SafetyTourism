@@ -22,13 +22,8 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <td class="tablehover" onclick="location.href = '@Url.Action("Details", new { id=item.GeoZoneID })'">
                 @Html.DisplayFor(modelItem => item.GeoZoneName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.GeoZoneID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.GeoZoneID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.GeoZoneID">Delete</a>
             </td>
         </tr>
 }

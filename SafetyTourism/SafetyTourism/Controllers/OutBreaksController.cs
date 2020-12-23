@@ -32,8 +32,8 @@ namespace SafetyTourism.Controllers
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
             ViewData["ActiveSortParm"] = sortOrder == "Active" ? "NonActive" : "Active";
 
+            
             var outbreaks = _context.OutBreaks.Include(g => g.GeoZone).Include(v => v.Virus).AsQueryable();
-
             switch (sortOrder) {
                 case "name_desc":
                     outbreaks = outbreaks.OrderByDescending(g => g.GeoZone.GeoZoneName);
@@ -72,16 +72,16 @@ namespace SafetyTourism.Controllers
             {
                 return NotFound();
             }
-
+            
             var outBreak = await _context.OutBreaks
                 .Include(o => o.Virus)
                 .Include(g => g.GeoZone)
                 .FirstOrDefaultAsync(m => m.OutBreakID == id);
+
             if (outBreak == null)
             {
                 return NotFound();
             }
-
             return View(outBreak);
         }
 

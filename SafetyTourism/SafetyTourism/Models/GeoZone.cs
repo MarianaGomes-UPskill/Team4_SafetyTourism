@@ -12,7 +12,6 @@ namespace SafetyTourism.Models
         public int GeoZoneID { get; set; }
         public string GeoZoneName { get; set; }
 
-
         public List<Country> Countries;
 
     }
