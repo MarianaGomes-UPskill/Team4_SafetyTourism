@@ -1,4 +1,4 @@
-﻿namespace WebApi.Helpers
+﻿namespace SafetyTourismApi.Helpers
 {
     public class AppSettings
     {

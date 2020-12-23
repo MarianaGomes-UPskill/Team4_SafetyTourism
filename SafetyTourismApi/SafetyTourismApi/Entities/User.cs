@@ -1,4 +1,4 @@
-﻿namespace WebApi.Entities
+﻿namespace SafetyTourismApi.Entities
 {
     public class User
     {

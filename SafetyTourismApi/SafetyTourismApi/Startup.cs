@@ -10,7 +10,7 @@ using SafetyTourismApi.Data;
 using SafetyTourismApi.Helpers;
 using SafetyTourismApi.Services;
 using System.Text;
-using WebApi.Helpers;
+using SafetyTourismApi.Helpers;
 
 namespace SafetyTourismApi
 {

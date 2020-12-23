@@ -7,8 +7,8 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SafetyTourismApi.Models;
-using WebApi.Entities;
-using WebApi.Helpers;
+using SafetyTourismApi.Entities;
+using SafetyTourismApi.Helpers;
 
 namespace SafetyTourismApi.Services
 {
