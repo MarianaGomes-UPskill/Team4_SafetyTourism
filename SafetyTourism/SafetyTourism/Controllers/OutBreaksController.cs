@@ -30,6 +30,7 @@ namespace SafetyTourism.Controllers
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["VirusSortParm"] = sortOrder == "virus" ? "virus_desc" : "virus";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["ActiveSortParm"] = sortOrder == "Active" ? "NonActive" : "Active";
 
             var outbreaks = _context.OutBreaks.Include(g => g.GeoZone).Include(v => v.Virus).AsQueryable();
 
@@ -49,12 +50,20 @@ namespace SafetyTourism.Controllers
                 case "date_desc":
                     outbreaks = outbreaks.OrderByDescending(d => d.StartDate);
                     break;
+                case "Active":
+                    outbreaks = outbreaks.Where(d => d.EndDate == null);
+                    break;
+                case "NonActive":
+                    outbreaks = outbreaks.Where(d => d.EndDate != null);
+                    break;
                 default:
                     outbreaks = outbreaks.OrderBy(g => g.GeoZone.GeoZoneName);
                     break;
             }
             return View(await outbreaks.AsNoTracking().ToListAsync());
         }
+
+
 
         // GET: OutBreaks/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -119,7 +128,7 @@ namespace SafetyTourism.Controllers
             ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName", outBreak.GeoZoneID);
             return View(outBreak);
         }
-
+     
         // POST: OutBreaks/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -172,9 +181,11 @@ namespace SafetyTourism.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["VirusID"] = new SelectList(_context.Viruses, "VirusID", "VirusName", outBreak.VirusID);
+            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName", outBreak.GeoZoneID);
             return View(outBreak);
         }
+        
 
         // POST: OutBreaks/Delete/5
         [HttpPost, ActionName("Delete")]
