@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SafetyTourism.Data;
 using SafetyTourism.Models;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace SafetyTourism.Controllers
-{
-    public class CountriesController : Controller
-    {
+namespace SafetyTourism.Controllers {
+    public class CountriesController : Controller {
         private readonly ApplicationDbContext _context;
 
-        public CountriesController(ApplicationDbContext context)
-        {
+        public CountriesController(ApplicationDbContext context) {
             _context = context;
         }
 
@@ -29,6 +25,8 @@ namespace SafetyTourism.Controllers
         public async Task<IActionResult> Index(string sortOrder, string searchString) {
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["GeoZoneSortParm"] = sortOrder == "geozone" ? "geozone_desc" : "geozone";
+            ViewData["CountrySortParm"] = sortOrder == "country" ? "country_desc" : "country";
+
 
             var countries = _context.Countries.Include(g => g.GeoZone).AsQueryable();
 
@@ -43,7 +41,7 @@ namespace SafetyTourism.Controllers
                     countries = countries.OrderBy(g => g.GeoZone.GeoZoneName);
                     break;
                 default:
-                    countries = countries.OrderBy(g => g.GeoZone.GeoZoneName);
+                    countries = countries.OrderBy(c => c.CountryName);
                     break;
             }
             return View(await countries.AsNoTracking().ToListAsync());
@@ -51,18 +49,15 @@ namespace SafetyTourism.Controllers
 
 
         // GET: Countries/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Details(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var country = await _context.Countries
                 .Include(c => c.GeoZone)
                 .FirstOrDefaultAsync(m => m.CountryID == id);
-            if (country == null)
-            {
+            if (country == null) {
                 return NotFound();
             }
 
@@ -70,8 +65,7 @@ namespace SafetyTourism.Controllers
         }
 
         // GET: Countries/Create
-        public IActionResult Create()
-        {
+        public IActionResult Create() {
             ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName");
             return View();
         }
@@ -81,10 +75,8 @@ namespace SafetyTourism.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CountryID,CountryName,GeoZoneID")] Country country)
-        {
-            if (ModelState.IsValid)
-            {
+        public async Task<IActionResult> Create([Bind("CountryID,CountryName,GeoZoneID")] Country country) {
+            if (ModelState.IsValid) {
                 _context.Add(country);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -94,16 +86,13 @@ namespace SafetyTourism.Controllers
         }
 
         // GET: Countries/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Edit(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var country = await _context.Countries.FindAsync(id);
-            if (country == null)
-            {
+            if (country == null) {
                 return NotFound();
             }
             ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName", country.GeoZoneID);
@@ -115,28 +104,19 @@ namespace SafetyTourism.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CountryID,CountryName,GeoZoneID")] Country country)
-        {
-            if (id != country.CountryID)
-            {
+        public async Task<IActionResult> Edit(int id, [Bind("CountryID,CountryName,GeoZoneID")] Country country) {
+            if (id != country.CountryID) {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
+            if (ModelState.IsValid) {
+                try {
                     _context.Update(country);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CountryExists(country.CountryID))
-                    {
+                } catch (DbUpdateConcurrencyException) {
+                    if (!CountryExists(country.CountryID)) {
                         return NotFound();
-                    }
-                    else
-                    {
+                    } else {
                         throw;
                     }
                 }
@@ -147,18 +127,15 @@ namespace SafetyTourism.Controllers
         }
 
         // GET: Countries/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Delete(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var country = await _context.Countries
                 .Include(c => c.GeoZone)
                 .FirstOrDefaultAsync(m => m.CountryID == id);
-            if (country == null)
-            {
+            if (country == null) {
                 return NotFound();
             }
 
@@ -168,16 +145,14 @@ namespace SafetyTourism.Controllers
         // POST: Countries/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
+        public async Task<IActionResult> DeleteConfirmed(int id) {
             var country = await _context.Countries.FindAsync(id);
             _context.Countries.Remove(country);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CountryExists(int id)
-        {
+        private bool CountryExists(int id) {
             return _context.Countries.Any(e => e.CountryID == id);
         }
     }
