@@ -10,16 +10,16 @@ using System.Net.Http.Headers;
 
 namespace SafetyTourism.Controllers.API
 {
-    public class CountriesAPIController : Controller
-    {
-        string Baseurl = "https://localhost:44372/";
-        public async Task<ActionResult> Index()
-        {
-            List<Country> CountryInfo = new List<Country>();
-            using (var client = new HttpClient())
-            {
+    //public class CountriesAPIController : Controller
+    //{
+    //    string Baseurl = "https://localhost:44372/";
+    //    public async Task<ActionResult> Index()
+    //    {
+    //        List<Country> CountryInfo = new List<Country>();
+    //        using (var client = new HttpClient())
+    //        {
 
-            }
-        }
-    }
+    //        }
+    //    }
+    //}
 }

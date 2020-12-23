@@ -1,0 +1,48 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide methods
+left to right direction
+
+class Plataforma{
+  -list touristList
+  -list employeeList
+  -list destinationList
+}
+
+class Tourist {
+  -string emailId
+  -string name
+  -string nationality
+  -string birthDate
+}
+
+class Employee {
+  -long nifId
+  -string name
+  -string address
+  -string email
+  -long phoneNumber
+}
+
+class Destination {
+  -int destinationId
+  -string countryName
+  -string cityName
+  -list reportList
+}
+
+class Report {
+  -int reportId
+  -string creationDate
+  -string infectionName
+  -int infectedNum
+  -string omsAdvice
+}
+
+
+Plataforma "1" -- "0...*" Tourist : has >
+Plataforma "1" -- "1...*" Employee : has >
+Plataforma "1" -- "1...*" Destination : has >
+
+Destination "1" -- "0..*" Report : has >
+@enduml

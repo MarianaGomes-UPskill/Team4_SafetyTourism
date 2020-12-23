@@ -20,11 +20,35 @@ namespace SafetyTourism.Controllers
         }
 
         // GET: Countries
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.Countries.Include(c => c.GeoZone);
-            return View(await applicationDbContext.ToListAsync());
+        //public async Task<IActionResult> Index()
+        //{
+        //    var applicationDbContext = _context.Countries.Include(c => c.GeoZone);
+        //    return View(await applicationDbContext.ToListAsync());
+        //}
+
+        public async Task<IActionResult> Index(string sortOrder, string searchString) {
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["GeoZoneSortParm"] = sortOrder == "geozone" ? "geozone_desc" : "geozone";
+
+            var countries = _context.Countries.Include(g => g.GeoZone).AsQueryable();
+
+            switch (sortOrder) {
+                case "name_desc":
+                    countries = countries.OrderByDescending(c => c.CountryName);
+                    break;
+                case "geozone_desc":
+                    countries = countries.OrderByDescending(g => g.GeoZone.GeoZoneName);
+                    break;
+                case "geozone":
+                    countries = countries.OrderBy(g => g.GeoZone.GeoZoneName);
+                    break;
+                default:
+                    countries = countries.OrderBy(g => g.GeoZone.GeoZoneName);
+                    break;
+            }
+            return View(await countries.AsNoTracking().ToListAsync());
         }
+
 
         // GET: Countries/Details/5
         public async Task<IActionResult> Details(int? id)

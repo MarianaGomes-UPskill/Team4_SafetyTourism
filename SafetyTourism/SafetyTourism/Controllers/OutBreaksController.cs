@@ -20,10 +20,40 @@ namespace SafetyTourism.Controllers
         }
 
         // GET: OutBreaks
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.OutBreaks.Include(o => o.Virus).Include(g => g.GeoZone);
-            return View(await applicationDbContext.ToListAsync());
+        //public async Task<IActionResult> Index()
+        //{
+        //    var applicationDbContext = _context.OutBreaks.Include(o => o.Virus).Include(g => g.GeoZone);
+        //    return View(await applicationDbContext.ToListAsync());
+        //}
+
+        public async Task<IActionResult> Index(string sortOrder, string searchString) {
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["VirusSortParm"] = sortOrder == "virus" ? "virus_desc" : "virus";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+
+            var outbreaks = _context.OutBreaks.Include(g => g.GeoZone).Include(v => v.Virus).AsQueryable();
+
+            switch (sortOrder) {
+                case "name_desc":
+                    outbreaks = outbreaks.OrderByDescending(g => g.GeoZone.GeoZoneName);
+                    break;
+                case "virus_desc":
+                    outbreaks = outbreaks.OrderByDescending(v => v.Virus.VirusName);
+                    break;
+                case "virus":
+                    outbreaks = outbreaks.OrderBy(v => v.Virus.VirusName);
+                    break;
+                case "Date":
+                    outbreaks = outbreaks.OrderBy(d => d.StartDate);
+                    break;
+                case "date_desc":
+                    outbreaks = outbreaks.OrderByDescending(d => d.StartDate);
+                    break;
+                default:
+                    outbreaks = outbreaks.OrderBy(g => g.GeoZone.GeoZoneName);
+                    break;
+            }
+            return View(await outbreaks.AsNoTracking().ToListAsync());
         }
 
         // GET: OutBreaks/Details/5

@@ -14,10 +14,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CountryName)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Country Name</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.GeoZone)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["GeoZoneSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">GeoZone Name</a>
             </th>
             <th></th>
         </tr>

@@ -1,0 +1,44 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide methods
+left to right direction
+
+class GeoZone {
+  -long GeoZoneID
+  -string GeoZoneName
+  -list CountryList
+}
+
+class Country {
+  -long CountryID
+  -string CountryName
+  -long GeoZoneID
+}
+
+class Recom{
+  -long RecomID
+  -long GeoZoneID
+  -DateTime CreationDate
+  -int ExpirationDate
+  -string Note
+}
+
+class Outbreak {
+  -long OutbreakID
+  -long VirusID
+  -long GeoZoneID
+  -DateTime StartDate
+  -DateTime? EndDate
+}
+
+class Virus {
+  -long VirusID
+  -string VirusName
+}
+
+GeoZone "1" -- "1...*" Country : has >
+GeoZone "1" -- "1...*" Recom : has >
+GeoZone "1" -- "1...*" Outbreak : has >
+
+Outbreak "1" -- "1...*" Virus : has >
+@enduml
