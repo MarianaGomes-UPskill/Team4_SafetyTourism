@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SafetyTourism.Data;
 using SafetyTourism.Models;
 using System;
 using System.Collections.Generic;
@@ -11,18 +13,18 @@ namespace SafetyTourism.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context) => _context = context;
+
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
-            _logger = logger;
+            var outbreaks = _context.OutBreaks.Include(g => g.GeoZone).Include(v => v.Virus).Where(o => o.EndDate == null).AsQueryable();
+           
+            return View(await outbreaks.AsNoTracking().ToListAsync());
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
+      
         public IActionResult Privacy()
         {
             return View();

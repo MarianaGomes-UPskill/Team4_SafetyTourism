@@ -1,8 +1,45 @@
-﻿@{
+﻿@model IEnumerable<SafetyTourism.Models.OutBreak>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome to your safety travels!</h1>
+    <br />
     <p>Here we promise you that you will fly with the safety of knowing what risk you are taking.</p>
 </div>
+<br />
+<br />
+<h1 style="text-align:center; color:red; text-decoration:solid;">Active Outbreaks</h1>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a>GeoZone Name</a>
+            </th>
+            <th style="text-align:center;"><a>Start Date</a></th>
+            <th style="text-align:right;">
+                <a>Virus</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.GeoZone.GeoZoneName)
+            </td>
+            <td style="text-align:center;">
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td style="text-align:right;">
+                @Html.DisplayFor(modelItem => item.Virus.VirusName)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
