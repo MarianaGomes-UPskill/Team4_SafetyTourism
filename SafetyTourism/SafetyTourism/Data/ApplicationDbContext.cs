@@ -35,7 +35,7 @@ namespace SafetyTourism.Data
             });
             modelBuilder.Entity<IdentityUserRole<string>>(entity =>
             {
-                entity.ToTable("UserRoles");
+                entity.ToTable("UserRole");
             });
             modelBuilder.Entity<IdentityUserClaim<string>>(entity =>
             {
