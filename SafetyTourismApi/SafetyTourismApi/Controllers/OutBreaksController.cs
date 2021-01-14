@@ -30,9 +30,10 @@ namespace SafetyTourismApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<OutBreak>> GetOutBreak(int id)
         {
-            var outBreak = _context.OutBreaks.Include(n => n.Virus).Include(m => m.GeoZone).ThenInclude(p => p.Countries).Where(m => m.OutBreakID == id);
+            var outBreak = await _context.OutBreaks.Include(n => n.Virus).Include(m => m.GeoZone).ThenInclude(p => p.Countries).FirstOrDefaultAsync(m => m.OutBreakID == id);
 
-            return outBreak == null ? NotFound() : (ActionResult<OutBreak>)await outBreak.SingleOrDefaultAsync();
+
+            return outBreak == null ? NotFound() : (ActionResult<OutBreak>)outBreak;
         }
 
         //Get: batata oubreaks por country

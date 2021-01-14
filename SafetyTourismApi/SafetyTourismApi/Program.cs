@@ -1,13 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using SafetyTourismApi.Data;
-using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace SafetyTourismApi
 {
@@ -17,20 +13,25 @@ namespace SafetyTourismApi
         {
             var host = CreateHostBuilder(args).Build();
 
-            CreateDbIfNotExists(host);
+            //CreateDbIfNotExists(host);
 
             host.Run();
 
             //CreateHostBuilder(args).Build().Run();
         }
 
-        private static void CreateDbIfNotExists(IHost host) {
-            using (var scope = host.Services.CreateScope()) {
+        private static void CreateDbIfNotExists(IHost host)
+        {
+            using (var scope = host.Services.CreateScope())
+            {
                 var services = scope.ServiceProvider;
-                try {
+                try
+                {
                     var context = services.GetRequiredService<WHOContext>();
                     DBInitializer.Initialize(context);
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred creating the DB.");
                 }

@@ -32,9 +32,9 @@ namespace SafetyTourismApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Recomendation>> GetRecomendation(int id)
         {
-            var recomendation = _context.Recomendations.Include(r => r.GeoZone).ThenInclude(r => r.Countries).Where(r => r.RecomendationID == id);
+            var recomendation = await _context.Recomendations.Include(r => r.GeoZone).ThenInclude(r => r.Countries).FirstOrDefaultAsync(r => r.RecomendationID == id);
 
-            return recomendation == null ? NotFound() : (ActionResult<Recomendation>)await recomendation.SingleOrDefaultAsync();
+            return recomendation == null ? NotFound() : (ActionResult<Recomendation>) recomendation;
         }
         [Route("~/api/Countries/{CountryID}/Recomendations")]
         public async Task<ActionResult<IEnumerable<Recomendation>>> GetRecomendationByCountryID(int CountryID)

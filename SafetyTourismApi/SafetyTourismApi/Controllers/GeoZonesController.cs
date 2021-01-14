@@ -32,9 +32,9 @@ namespace SafetyTourismApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GeoZone>> GetGeoZoneByID(int id)
         {
-            var geozone = _context.GeoZones.Include(g => g.Countries).Where(g => g.GeoZoneID == id);
+            var geozone = await _context.GeoZones.Include(g => g.Countries).FirstOrDefaultAsync(g => g.GeoZoneID == id);
 
-            return geozone == null ? NotFound() : (ActionResult<GeoZone>)await geozone.SingleOrDefaultAsync();
+            return geozone == null ? NotFound() : (ActionResult<GeoZone>) geozone;
         }
 
         // PUT: api/GeoZones/5
