@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SafetyTourismApi.Data;
+using SafetyTourismApi.Models;
+using System;
 
 namespace testProject
 {
@@ -13,16 +15,27 @@ namespace testProject
                 .UseInMemoryDatabase(databaseName: dbName)
                 .Options;
 
-            WHOContext dbContext = new WHOContext(options);
+            dbContext = new WHOContext(options);
             Seed();
             return dbContext;
         }
 
         private static void Seed()
         {
-            dbContext.TodoItems.Add();
-            dbContext.TodoItems.Add();
+            dbContext.Countries.Add(new Country { CountryName = "Australia", GeoZoneID = 1 });
+            dbContext.Countries.Add(new Country { CountryName = "Spain", GeoZoneID = 2 });
 
+            dbContext.GeoZones.Add(new GeoZone { GeoZoneName = "Oceania" });
+            dbContext.GeoZones.Add(new GeoZone { GeoZoneName = "Europe" });
+
+            dbContext.Viruses.Add(new Virus { VirusName = "SARS-Cov2" });
+            dbContext.Viruses.Add(new Virus { VirusName = "Malaria" });
+
+            dbContext.OutBreaks.Add(new OutBreak { GeoZoneID = 1, VirusID = 3, StartDate = new DateTime(2020 - 02 - 22) });
+            dbContext.OutBreaks.Add(new OutBreak { GeoZoneID = 2, VirusID = 2, StartDate = new DateTime(2021 - 10 - 02) });
+
+            dbContext.Recomendations.Add(new Recomendation { Note = "Be careful", GeoZoneID = 3, CreationDate = new DateTime(2001 - 02 - 22), ExpirationDate = 20 });
+            dbContext.Recomendations.Add(new Recomendation { Note = "Don't drive", GeoZoneID = 10, CreationDate = new DateTime(1996 - 12 - 22), ExpirationDate = 1500 });
             dbContext.SaveChanges();
 
         }
