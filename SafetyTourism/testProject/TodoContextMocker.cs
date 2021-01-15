@@ -1,12 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using SafetyTourismApi.Data;
 
 namespace testProject
 {
-    class TodoContextMocker
+    public static class TodoContextMocker
     {
+        private static WHOContext dbContext;
+
+        public static WHOContext GetWHOContext(string dbName)
+        {
+            var options = new DbContextOptionsBuilder<WHOContext>()
+                .UseInMemoryDatabase(databaseName: dbName)
+                .Options;
+
+            WHOContext dbContext = new WHOContext(options);
+            Seed();
+            return dbContext;
+        }
+
+        private static void Seed()
+        {
+            dbContext.TodoItems.Add();
+            dbContext.TodoItems.Add();
+
+            dbContext.SaveChanges();
+
+        }
+
     }
 }

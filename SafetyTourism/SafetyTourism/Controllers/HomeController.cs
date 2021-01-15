@@ -20,11 +20,11 @@ namespace SafetyTourism.Controllers
         public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
             var outbreaks = _context.OutBreaks.Include(g => g.GeoZone).Include(v => v.Virus).Where(o => o.EndDate == null).AsQueryable();
-           
+
             return View(await outbreaks.AsNoTracking().ToListAsync());
         }
 
-      
+
         public IActionResult Privacy()
         {
             return View();
