@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Web.Providers.Entities;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-
+using SafetyTourismApi.Entities;
 
 namespace SafetyTourismApi.Helpers
 {
