@@ -24,7 +24,7 @@ namespace testProject
         {
             dbContext.Countries.Add(new Country { CountryName = "Australia", GeoZoneID = 1 });
             dbContext.Countries.Add(new Country { CountryName = "Spain", GeoZoneID = 2 });
-
+            
             dbContext.GeoZones.Add(new GeoZone { GeoZoneName = "Oceania" });
             dbContext.GeoZones.Add(new GeoZone { GeoZoneName = "Europe" });
 
