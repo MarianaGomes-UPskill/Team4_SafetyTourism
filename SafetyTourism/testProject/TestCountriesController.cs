@@ -14,7 +14,7 @@ namespace testProject
         [Fact]
         public async Task GetAllCountriesAsync_ShouldReturnAllCountries()
         {
-            var TestContext = TodoContextMocker.GetWHOContext("WHOContext");
+            var TestContext = TodoContextMocker.GetWHOContext("GetAllCountries");
             var theController = new CountriesController(TestContext);
 
             var result = await theController.GetCountries();
@@ -23,11 +23,16 @@ namespace testProject
             Assert.Equal(2, items.Count);
         }
 
-        //[Fact]
-        //public async Task GetCountryByID_ShouldReturnCountryByID()
-        //{
-        //    string result = await theController.GetCountry(1);
-        //    Assert.Equal("Teste", result);
-        //}
+        [Fact]
+        public async Task GetCountryByID_ShouldReturnCountryByID()
+        {
+            var TestContext = TodoContextMocker.GetWHOContext("GetCountryByID");
+            var theController = new CountriesController(TestContext);
+
+            var result = await theController.GetCountry(1);
+
+            var items = Assert.IsType<Country>(result.Value);
+            Assert.Equal("Australia", items.CountryName);
+        }
     }
 }
