@@ -26,8 +26,11 @@ namespace SafetyTourismApi
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDbContext<WHOContext>(opt =>
-                                              opt.UseInMemoryDatabase("WHOList"));
+            services
+                .AddDbContext<WHOContext>(options =>
+                                              options.UseInMemoryDatabase("WHOList"));
+          
+                
 
             services.AddCors(options =>
             {
