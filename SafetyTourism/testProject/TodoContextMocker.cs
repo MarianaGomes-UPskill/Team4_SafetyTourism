@@ -25,8 +25,8 @@ namespace testProject
             dbContext.Countries.Add(new Country { CountryName = "Australia", GeoZoneID = 1 });
             dbContext.Countries.Add(new Country { CountryName = "Spain", GeoZoneID = 2 });
             
-            dbContext.GeoZones.Add(new GeoZone { GeoZoneName = "Oceania" });
-            dbContext.GeoZones.Add(new GeoZone { GeoZoneName = "Europe" });
+            dbContext.GeoZones.Add(new GeoZone { GeoZoneID = 1, GeoZoneName = "Oceania" });
+            dbContext.GeoZones.Add(new GeoZone { GeoZoneID = 2, GeoZoneName = "Europe" });
 
             dbContext.Viruses.Add(new Virus { VirusName = "SARS-Cov2" });
             dbContext.Viruses.Add(new Virus { VirusName = "Malaria" });
