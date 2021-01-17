@@ -4,6 +4,7 @@ using SafetyTourismApi.Controllers;
 using SafetyTourismApi.Data;
 using SafetyTourismApi.Models;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -15,6 +16,7 @@ namespace testProject
         [Fact]
         public async Task GetAllCountriesAsync_ShouldReturnAllCountries()
         {
+            Thread.Sleep(2000);
             var TestContext = TodoContextMocker.GetWHOContext("GetAllCountries");
             var theController = new CountriesController(TestContext);
 
@@ -27,6 +29,7 @@ namespace testProject
         [Fact]
         public async Task GetCountryByID_ShouldReturnCountryByID()
         {
+            Thread.Sleep(2000);
             var TestContext = TodoContextMocker.GetWHOContext("GetCountryByID");
             var theController = new CountriesController(TestContext);
 
@@ -39,6 +42,7 @@ namespace testProject
         [Fact]
         public async Task PutCountry_ShouldReturnEditedCountry()
         {
+            Thread.Sleep(2000);
             var TestContext = TodoContextMocker.GetWHOContext("PutCountry");
             var theController = new CountriesController(TestContext);
 
@@ -65,6 +69,7 @@ namespace testProject
         [Fact]
         public async Task PostCountry_ShouldCreateNewCountry()
         {
+           
             var TestContext = TodoContextMocker.GetWHOContext("PostCountry");
             var theController = new CountriesController(TestContext);
 

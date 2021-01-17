@@ -31,8 +31,8 @@ namespace testProject
             dbContext.Viruses.Add(new Virus { VirusName = "SARS-Cov2" });
             dbContext.Viruses.Add(new Virus { VirusName = "Malaria" });
 
-            dbContext.OutBreaks.Add(new OutBreak { GeoZoneID = 1, VirusID = 1, StartDate = new DateTime(2020 - 02 - 22) });
-            dbContext.OutBreaks.Add(new OutBreak { GeoZoneID = 2, VirusID = 2, StartDate = new DateTime(2021 - 10 - 02) });
+            dbContext.OutBreaks.Add(new OutBreak { GeoZoneID = 1, VirusID = 1, StartDate = DateTime.Parse("2001 - 02 - 22") });
+            dbContext.OutBreaks.Add(new OutBreak { GeoZoneID = 2, VirusID = 2, StartDate = DateTime.Parse("2001 - 02 - 25") });
 
             dbContext.Recomendations.Add(new Recomendation { Note = "Be careful", GeoZoneID = 1, CreationDate = new DateTime(2001 - 02 - 22), ExpirationDate = 20 });
             dbContext.Recomendations.Add(new Recomendation { Note = "Don't drive", GeoZoneID = 2, CreationDate = new DateTime(1996 - 12 - 22), ExpirationDate = 1500 });
