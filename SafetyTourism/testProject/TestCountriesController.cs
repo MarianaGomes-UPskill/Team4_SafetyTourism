@@ -12,7 +12,7 @@ namespace testProject
 {
     public class TestCountriesController
     {
-     
+
         [Fact]
         public async Task GetAllCountriesAsync_ShouldReturnAllCountries()
         {
@@ -48,7 +48,7 @@ namespace testProject
 
             var oldCountryResult = await theController.GetCountry(1);
             var oldCountry = oldCountryResult.Value;
-            oldCountry.CountryID = 1;   
+            oldCountry.CountryID = 1;
             oldCountry.CountryName = "China";
             oldCountry.GeoZoneID = 1;
 
@@ -59,7 +59,7 @@ namespace testProject
             Assert.Equal("China", items.CountryName);
             Assert.Equal(1, items.CountryID);
             Assert.Equal(1, items.GeoZoneID);
-            Assert.IsType<NoContentResult>(result); 
+            Assert.IsType<NoContentResult>(result);
         }
 
         [Fact]
@@ -90,6 +90,9 @@ namespace testProject
             Thread.Sleep(3500);
             var TestContext = TodoContextMocker.GetWHOContext("DeleteCountry");
             var theController = new CountriesController(TestContext);
+            var id = 1;
+            var result = await theController.DeleteCountry(id);
+            var getResult = await theController.GetCountry(id);
 
             var result = await theController.DeleteCountry(1);
             var getResult = await theController.GetCountry(1);

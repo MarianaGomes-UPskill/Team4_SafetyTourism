@@ -93,5 +93,18 @@ namespace testProject
             Assert.Equal("Use mask", items.Note);
             Assert.IsType<CreatedAtActionResult>(result.Result);
         }
+
+        [Fact]
+        public async Task DeleteRecomendation_ShouldDeleteRecomendation()
+        {
+            Thread.Sleep(4500);
+            var TestContext = TodoContextMocker.GetWHOContext("DeleteRecomendation");
+            var theController = new RecomendationsController(TestContext);
+
+            var result = await theController.DeleteRecomendation(1);
+            var getResult = await theController.GetRecomendation(1);
+
+            Assert.IsType<NoContentResult>(result);
+        }
     }
 }
