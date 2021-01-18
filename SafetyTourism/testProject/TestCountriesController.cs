@@ -82,7 +82,6 @@ namespace testProject
             Assert.Equal(3, items.CountryID);
             Assert.Equal(1, items.GeoZoneID);
             Assert.IsType<CreatedAtActionResult>(result.Result);
-            //Verificar como corrigir isto
         }
 
         [Fact]
@@ -92,8 +91,8 @@ namespace testProject
             var TestContext = TodoContextMocker.GetWHOContext("DeleteCountry");
             var theController = new CountriesController(TestContext);
 
-            var result = await theController.DeleteCountry(3);
-            var getResult = await theController.GetCountry(3);
+            var result = await theController.DeleteCountry(1);
+            var getResult = await theController.GetCountry(1);
 
             Assert.IsType<NotFoundResult>(result);
         }
