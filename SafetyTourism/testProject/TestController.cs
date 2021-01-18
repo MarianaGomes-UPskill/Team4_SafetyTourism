@@ -114,51 +114,6 @@ namespace testProject
 
         }
 
-        //Virus Controller Test
-        [Fact]
-        public async Task GetAllVirusAsync_ShouldReturnAllVirus()
-        {
-            Thread.Sleep(1000);
-            
-            var TestContext = TodoContextMocker.GetWHOContext("GetAllViruses");
-            var theController = new VirusesController(TestContext);
-
-            var result = await theController.GetViruses();
-
-            var items = Assert.IsType<List<Virus>>(result.Value);
-            Assert.Equal(2, items.Count);
-        }
-
-
-        [Fact]
-        public async Task GetVirusByID_ShouldReturnVirusByID()
-        {
-            Thread.Sleep(1000);
-
-            var TestContext = TodoContextMocker.GetWHOContext("GetVirusByID");
-            var theController = new VirusesController(TestContext);
-
-            var result = await theController.GetVirus(1);
-
-            var items = Assert.IsType<Virus>(result.Value);
-            Assert.Equal("SARS-Cov2", items.VirusName);
-        }
-
-        [Fact]
-        public async Task PutVirusAsync_ShouldReturnAlteredVirus()
-        {
-            Thread.Sleep(1000);
-
-            var TestContext = TodoContextMocker.GetWHOContext("GetChangedVirus");
-            var theController = new VirusesController(TestContext);
-            var id = 1;
-            var viruses = new Virus { VirusID = 1, VirusName = "Ebola" };
-
-            var result = await theController.PutVirus(id, viruses);
-
-            Assert.IsType<CreatedAtActionResult>(result);
-        }
-
     }
 }
 
