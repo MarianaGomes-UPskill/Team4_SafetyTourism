@@ -39,6 +39,7 @@ namespace testProject
             Assert.Equal("SARS-Cov2", items.VirusName);
         }
 
+
         [Fact]
         public async Task PutVirus_ShouldReturnEditedVirus()
         {
@@ -66,6 +67,26 @@ namespace testProject
         }
 
         [Fact]
+        public async Task PutNoExistingVirusAsync_ShouldReturnNotFound() {
+            // Arrange
+            Thread.Sleep(3500);
+            var dbName = System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name;
+            var testContext = TodoContextMocker.GetWHOContext(dbName);
+            var theController = new VirusesController(testContext);
+            var testCod = 20;
+            var theNonExistingVirus = new Virus {
+                VirusID = testCod,
+                VirusName = "Updated Virus " + testCod
+            };
+
+            // Act
+            var response = await theController.PutVirus(testCod, theNonExistingVirus);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(response);
+        }
+
+        [Fact]
         public async Task PostVirusAsync_ShouldCreatNewVirusAsync() {
             Thread.Sleep(3500);
             //Arrange
@@ -81,6 +102,27 @@ namespace testProject
             Assert.Equal("Tuberculosis", items.VirusName);
             Assert.IsType<CreatedAtActionResult>(result.Result);
         }
+
+        //[Fact]
+        //public async Task PostBadNoNameVirusAsync_ShouldReturnBadRequest() {
+        //    // Arrange
+        //    var dbName = System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name;
+        //    var TestContext = TodoContextMocker.GetWHOContext(dbName);
+        //    var theController = new VirusesController(TestContext);
+
+        //    var notValidCode = null;
+        //    var noNameVirus = new Virus {
+        //        VirusID = notValidCode, VirusName = "XYZ"
+        //    };
+        //    theController.ModelState.AddModelError("Name", "Required");
+
+        //    // Act
+        //    var response = await theController.PostVirus(noNameVirus);
+        
+        //// Assert
+        //    Assert.IsType<BadRequestObjectResult>(response.Result);
+        //}
+
 
         [Fact]
         public async Task DeleteVirusByID_CantReturnVirusByID() {
