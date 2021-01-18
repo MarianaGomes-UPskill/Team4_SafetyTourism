@@ -39,6 +39,20 @@ namespace testProject
             Assert.Equal("SARS-Cov2", items.VirusName);
         }
 
+        [Fact]
+        public async Task GetVirusAsync_ShouldReturnNotFound() {
+            // Arrange
+            var dbName = System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name;
+            var TestContext = TodoContextMocker.GetWHOContext(dbName);
+            var theController = new VirusesController(TestContext);
+
+            // Act
+            var response = await theController.GetVirus(0);
+
+            //Assert       
+            Assert.IsType<NotFoundResult>(response.Result);
+        }
+
 
         [Fact]
         public async Task PutVirus_ShouldReturnEditedVirus()
@@ -86,6 +100,30 @@ namespace testProject
             Assert.IsType<NotFoundResult>(response);
         }
 
+            //[Fact]
+            //public async Task PutBadNoNameVirusAsync_ShouldReturnBadRequest() {
+            //// Arrange
+            //    Thread.Sleep(3500);
+            //    var dbName = System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name;
+            //    var testContext = TodoContextMocker.GetWHOContext(dbName);
+            //    var theController = new VirusesController(testContext);
+
+            //    var noNameVirus = new Virus {
+            //        VirusID = 1
+            //    };
+
+            //    var v = await testContext.FindAsync<Virus>(1); //To Avoid tracking error
+            //    testContext.Entry(v).State = EntityState.Detached;
+
+            //    theController.ModelState.AddModelError("Name", "Required");
+
+            //    // Act
+            //    var response = await theController.PutVirus(1, noNameVirus);
+
+            //    // Assert
+            //    Assert.IsType<BadRequestResult>(response);
+            //}
+
         [Fact]
         public async Task PostVirusAsync_ShouldCreatNewVirusAsync() {
             Thread.Sleep(3500);
@@ -103,25 +141,23 @@ namespace testProject
             Assert.IsType<CreatedAtActionResult>(result.Result);
         }
 
-        //[Fact]
-        //public async Task PostBadNoNameVirusAsync_ShouldReturnBadRequest() {
-        //    // Arrange
-        //    var dbName = System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name;
-        //    var TestContext = TodoContextMocker.GetWHOContext(dbName);
-        //    var theController = new VirusesController(TestContext);
+            //[Fact]
+            //public async Task PostBadNoNameVirusAsync_ShouldReturnBadRequest() {
+            //    // Arrange
+            //    var dbName = System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name;
+            //    var TestContext = TodoContextMocker.GetWHOContext(dbName);
+            //    var theController = new VirusesController(TestContext);
+            //    var noNameVirus = new Virus {
+            //        VirusID = 30, VirusName = null
+            //    };
+            //    theController.ModelState.AddModelError("Name", "Required");
 
-        //    var notValidCode = null;
-        //    var noNameVirus = new Virus {
-        //        VirusID = notValidCode, VirusName = "XYZ"
-        //    };
-        //    theController.ModelState.AddModelError("Name", "Required");
+            //    // Act
+            //    var response = await theController.PostVirus(noNameVirus);
 
-        //    // Act
-        //    var response = await theController.PostVirus(noNameVirus);
-        
-        //// Assert
-        //    Assert.IsType<BadRequestObjectResult>(response.Result);
-        //}
+            //    // Assert
+            //    Assert.IsType<BadRequestObjectResult>(response.Result);
+            //}
 
 
         [Fact]
@@ -137,6 +173,21 @@ namespace testProject
 
             //Assert
             Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteNotExistingVirus_ShouldReturnNotFound() {
+            // Arrange
+            Thread.Sleep(3500);
+            var dbName = System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name;
+            var TestContext = TodoContextMocker.GetWHOContext(dbName);
+            var theController = new VirusesController(TestContext);
+
+            // Act
+            var result = await theController.DeleteVirus(20);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
         }
     }
 }
