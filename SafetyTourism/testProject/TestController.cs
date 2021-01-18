@@ -108,7 +108,6 @@ namespace testProject
             var getresult = await theController.GetOutBreak(1);
 
             //Assert
-            var items = Assert.IsType<NotFoundResult>(getresult);
             Assert.IsType<NoContentResult>(result);
             
 
