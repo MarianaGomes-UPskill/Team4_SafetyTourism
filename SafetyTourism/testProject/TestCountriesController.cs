@@ -46,49 +46,58 @@ namespace testProject
             var TestContext = TodoContextMocker.GetWHOContext("PutCountry");
             var theController = new CountriesController(TestContext);
 
-            var newCountry = new Country
-            {
-                CountryID = 1,
-                CountryName = "China",
-                GeoZoneID = 1
-            };
-
             var oldCountryResult = await theController.GetCountry(1);
             var oldCountry = oldCountryResult.Value;
+            oldCountry.CountryID = 1;   
+            oldCountry.CountryName = "China";
+            oldCountry.GeoZoneID = 1;
 
-            TestContext.Entry(oldCountry).State = EntityState.Detached;
-
-            var result = await theController.PutCountry(newCountry.CountryID, newCountry);
-            var getResult = await theController.GetCountry(newCountry.CountryID);
+            var result = await theController.PutCountry(oldCountry.CountryID, oldCountry);
+            var getResult = await theController.GetCountry(1);
 
             var items = Assert.IsType<Country>(getResult.Value);
             Assert.Equal("China", items.CountryName);
+            Assert.Equal(1, items.CountryID);
+            Assert.Equal(1, items.GeoZoneID);
             Assert.IsType<NoContentResult>(result); 
         }
 
         [Fact]
         public async Task PostCountry_ShouldCreateNewCountry()
         {
-           
+
             var TestContext = TodoContextMocker.GetWHOContext("PostCountry");
             var theController = new CountriesController(TestContext);
 
-            var newCountry = new Country
-            {
-                CountryID = 3,
-                CountryName = "Islândia",
-                GeoZoneID = 1
-            };
-            var addedCountryResult = await theController.GetCountry(3);
-            var addedCountry = addedCountryResult.Value;
-
-            TestContext.Entry(addedCountry).State = EntityState.Detached;
+            var newCountry = new Country();
+            newCountry.CountryID = 3;
+            newCountry.CountryName = "Islândia";
+            newCountry.GeoZoneID = 1;
 
             var result = await theController.PostCountry(newCountry);
-            var items = Assert.IsType<Country>(result.Value);
+            var getResult = await theController.GetCountry(3);
+
+            var items = Assert.IsType<Country>(getResult.Value);
             Assert.Equal("Islândia", items.CountryName);
-            Assert.IsType<CreatedAtActionResult>(result);
+            Assert.Equal(3, items.CountryID);
+            Assert.Equal(1, items.GeoZoneID);
+            Assert.IsType<CreatedAtActionResult>(result.Result);
+            //Verificar como corrigir isto
         }
+
+        [Fact]
+        public async Task DeleteCountry_ShouldDeleteCountry()
+        {
+            Thread.Sleep(3500);
+            var TestContext = TodoContextMocker.GetWHOContext("DeleteCountry");
+            var theController = new CountriesController(TestContext);
+
+            var result = await theController.DeleteCountry(3);
+            var getResult = await theController.GetCountry(3);
+
+            Assert.IsType<NoContentResult>(result);
+        }
+
 
 
     }
