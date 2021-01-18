@@ -41,6 +41,18 @@ namespace testProject
         }
 
         [Fact]
+        public async Task GetRecomendationByID_ShouldReturnNotFound()
+        {
+            Thread.Sleep(4000);
+            var TestContext = TodoContextMocker.GetWHOContext("NotFoundRecomendationByID");
+            var theController = new RecomendationsController(TestContext);
+
+            var result = await theController.GetRecomendation(0);
+
+            Assert.IsType<NotFoundResult>(result.Result);
+        }
+
+        [Fact]
         public async Task PutRecomendation_ShouldReturnEditedRecomendation()
         {
             Thread.Sleep(4000);
@@ -67,6 +79,34 @@ namespace testProject
             var items = Assert.IsType<Recomendation>(getResult.Value);
             Assert.Equal("Be careful, Very Careful", items.Note);
             Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public async Task PutNoRecomendation_ShouldReturnNotFound()
+        {
+            Thread.Sleep(4000);
+            var TestContext = TodoContextMocker.GetWHOContext("NotPutRecomendation");
+            var theController = new RecomendationsController(TestContext);
+
+            var newRecomendation = new Recomendation
+            {
+                RecomendationID = 0,
+                Note = "Be careful, Very Careful",
+                GeoZoneID = 1,
+                CreationDate = DateTime.Parse("2001 - 02 - 22"),
+                ExpirationDate = 35
+            };
+
+            var oldRecomendationResult = await theController.GetRecomendation(1);
+            var oldRecomendation = oldRecomendationResult.Value;
+
+            TestContext.Entry(oldRecomendation).State = EntityState.Detached;
+
+            var result = await theController.PutRecomendation(newRecomendation.RecomendationID, newRecomendation);
+            var getResult = await theController.GetRecomendation(newRecomendation.RecomendationID);
+
+           
+            Assert.IsType<NotFoundResult>(getResult.Result);
         }
 
         [Fact]
@@ -102,9 +142,19 @@ namespace testProject
             var theController = new RecomendationsController(TestContext);
 
             var result = await theController.DeleteRecomendation(1);
-            var getResult = await theController.GetRecomendation(1);
-
+            
             Assert.IsType<NoContentResult>(result);
+        }
+        [Fact]
+        public async Task DeleteNotExistRecomendation_ShouldReturnNotFound()
+        {
+            Thread.Sleep(4600);
+            var TestContext = TodoContextMocker.GetWHOContext("NotFoundDeleteRecomendation");
+            var theController = new RecomendationsController(TestContext);
+
+            var result = await theController.DeleteRecomendation(10);
+
+            Assert.IsType<NotFoundResult>(result);
         }
     }
 }
