@@ -65,28 +65,36 @@ namespace testProject
             Assert.IsType<NoContentResult>(result); 
         }
 
-        //[Fact]
-        //public async Task PostVirus_ShouldCreateNewVirus()
-        //{
-        //    Thread.Sleep(3500);
-        //    var TestContext = TodoContextMocker.GetWHOContext("PostVirus");
-        //    var theController = new VirusesController(TestContext);
+        [Fact]
+        public async Task PostVirusAsync_ShouldCreatNewVirusAsync() {
+            Thread.Sleep(3500);
+            //Arrange
+            var TestContext = TodoContextMocker.GetWHOContext("PostVirus");
+            var theController = new VirusesController(TestContext);
 
-        //    var newVirus = new Virus
-        //    {
-        //        VirusID = 3,
-        //        VirusName = "Tuberculosis"
-        //    };
-        //    var addedVirusResult = await theController.GetVirus(3);
-        //    var addedVirus = addedVirusResult.Value;
+            //Act
+            var result = await theController.PostVirus(new Virus { VirusID = 3, VirusName = "Tuberculosis" });
+            var addedVirusResult = await theController.GetVirus(3);
 
-        //    TestContext.Entry(addedVirus).State = EntityState.Detached;
+            //Assert
+            var items = Assert.IsType<Virus>(addedVirusResult.Value);
+            Assert.Equal("Tuberculosis", items.VirusName);
+            Assert.IsType<CreatedAtActionResult>(result.Result);
+        }
 
-        //    var result = await theController.PostVirus(newVirus);
-        //    var items = Assert.IsType<Virus>(result.Value);
-        //    Assert.Equal("Tuberculosis", items.VirusName);
-        //    Assert.IsType<CreatedAtActionResult>(result);
-        //}
+        [Fact]
+        public async Task DeleteVirusByID_CantReturnVirusByID() {
+            Thread.Sleep(3500);
+            //Arrange
+            var TestContext = TodoContextMocker.GetWHOContext("DeleteVirus");
+            var theController = new VirusesController(TestContext);
+
+            //Act
+            var result = await theController.DeleteVirus(1);
+            var getresult = await theController.GetVirus(1);
+
+            //Assert
+            Assert.IsType<NoContentResult>(result);
+        }
     }
 }
-
