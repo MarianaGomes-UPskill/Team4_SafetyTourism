@@ -95,7 +95,7 @@ namespace testProject
             var result = await theController.DeleteCountry(3);
             var getResult = await theController.GetCountry(3);
 
-            Assert.IsType<NoContentResult>(result);
+            Assert.IsType<NotFoundResult>(result);
         }
 
 
