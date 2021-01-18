@@ -80,5 +80,19 @@ namespace testProject
             Assert.Equal("America", items.GeoZoneName);
             Assert.IsType<CreatedAtActionResult>(result.Result);
         }
+
+        [Fact]
+        public async Task DeleteGeoZoneByID_CantReturnGeoZoneByID()
+        {
+            Thread.Sleep(4000);
+
+            var TestContext = TodoContextMocker.GetWHOContext("DeleteGeoZone");
+            var theController = new GeoZonesController(TestContext);
+
+            var result = await theController.DeleteGeoZone(1);
+            var getresult = await theController.GetGeoZoneByID(1);
+
+            Assert.IsType<NoContentResult>(result);
+        }
     }
 }
