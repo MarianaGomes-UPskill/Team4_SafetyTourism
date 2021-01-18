@@ -81,6 +81,7 @@ namespace SafetyTourismApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Recomendation>> PostRecomendation(Recomendation recomendation)
         {
+            _context.Recomendations.Include(r => r.GeoZone).ThenInclude(r => r.Countries).ToListAsync();
             _context.Recomendations.Add(recomendation);
             await _context.SaveChangesAsync();
 
