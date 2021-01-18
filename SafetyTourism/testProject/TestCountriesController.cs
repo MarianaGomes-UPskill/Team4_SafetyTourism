@@ -91,11 +91,11 @@ namespace testProject
             Thread.Sleep(3500);
             var TestContext = TodoContextMocker.GetWHOContext("DeleteCountry");
             var theController = new CountriesController(TestContext);
+            var id = 1;
+            var result = await theController.DeleteCountry(id);
+            var getResult = await theController.GetCountry(id);
 
-            var result = await theController.DeleteCountry(3);
-            var getResult = await theController.GetCountry(3);
-
-            Assert.IsType<NoContentResult>(result);
+            Assert.IsType<NotFoundResult>(getResult);
         }
 
 
