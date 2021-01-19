@@ -17,7 +17,7 @@ namespace SafetyTourism.Controllers
 {
     public class CountriesController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+       
         private readonly string apiBaseUrl;
         private readonly IConfiguration _configure;
         //public CountriesController(ILogger<HomeController> logger)
@@ -32,7 +32,7 @@ namespace SafetyTourism.Controllers
         }
         public IActionResult Index()
         {
-            IEnumerable<Country> paises = null;
+            IEnumerable<Country> countries = null;
 
             using (var client = new HttpClient())
             {
@@ -48,16 +48,16 @@ namespace SafetyTourism.Controllers
                     var readTask = result.Content.ReadAsAsync<IList<Country>>();
                     readTask.Wait();
 
-                    paises = readTask.Result;
+                    countries = readTask.Result;
                 }
                 else
                 {
                     //Error response received   
-                    paises = Enumerable.Empty<Country>();
+                    countries = Enumerable.Empty<Country>();
                     ModelState.AddModelError(string.Empty, "Server error try after some time.");
                 }
             }
-            return View(paises);
+            return View(countries);
         }
 
     
@@ -71,11 +71,12 @@ namespace SafetyTourism.Controllers
                 response.EnsureSuccessStatusCode();
                 listaZonas = await response.Content.ReadAsAsync<List<GeoZone>>();
             }
+            ViewData["GeoZoneID"] = new SelectList(listaZonas, "GeoZoneID", "GeoZoneName");
             PopulateZonasDropDownList(listaZonas);
             return View();
         }
 
-        // POST: paises/create
+        // POST: countries/create
         [HttpPost]
         public async Task<IActionResult> Create([Bind("CountryID, CountryName, GeoZoneID")] Country country)
         {
@@ -94,7 +95,7 @@ namespace SafetyTourism.Controllers
         }
 
 
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -117,7 +118,7 @@ namespace SafetyTourism.Controllers
         }
 
 
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -144,12 +145,34 @@ namespace SafetyTourism.Controllers
                 var response = await client.GetAsync(endpoint);
                 response.EnsureSuccessStatusCode();
                 listaZonas = await response.Content.ReadAsAsync<List<GeoZone>>();
+                ViewData["GeoZoneID"] = new SelectList(listaZonas, "GeoZoneID", "GeoZoneName");
             }
             PopulateZonasDropDownList(listaZonas, id);
             return View(country);
         }
-    
-        public async Task<IActionResult> Delete(string id)
+
+        [HttpPost]
+      
+        public async Task<IActionResult> Edit(int id, [Bind("CountryID, CountryName, GeoZoneID")] Country country)
+        {
+            if (id != country.CountryID)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(country), Encoding.UTF8, "application/json");
+                    string endpoint = apiBaseUrl + "/countries/" + id;
+                    var response = await client.PutAsync(endpoint, content);
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(country);
+        }
+
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -171,10 +194,10 @@ namespace SafetyTourism.Controllers
             return View(country);
         }
 
-        // POST: paises/delete/pt
+        // POST: countries/delete/pt
         [HttpPost, ActionName("Delete")]
         
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -194,7 +217,7 @@ namespace SafetyTourism.Controllers
             var zonasQuery = from z in listaZonas
                              orderby z.GeoZoneName
                              select z;
-            ViewBag.Zona = new SelectList(zonasQuery, "ID", "Name", selectedZona);
+            ViewBag.GeoZone = new SelectList(zonasQuery, "ID", "Name", selectedZona);
         }
     }
 }

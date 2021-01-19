@@ -116,7 +116,7 @@ namespace SafetyTourismApi.Controllers {
 
 
 
-//        // DELETE: api/pais/5
+//        // DELETE: api/country/5
 //        [HttpDelete("{cod}")]
 //        public async Task<IActionResult> DeleteCountry(string cod) {
 //            var country = await _context.Countries.FindAsync(cod);
