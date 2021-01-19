@@ -18,7 +18,7 @@ namespace SafetyTourism.Data.Migrations
                 .HasDefaultSchema("Identity")
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.1");
+                .HasAnnotation("ProductVersion", "5.0.2");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -163,12 +163,10 @@ namespace SafetyTourism.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -205,12 +203,10 @@ namespace SafetyTourism.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -222,63 +218,70 @@ namespace SafetyTourism.Data.Migrations
 
             modelBuilder.Entity("SafetyTourism.Models.Country", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("CountryID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Name")
+                    b.Property<string>("CountryName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.Property<int>("GeoZoneID")
+                        .HasColumnType("int");
+
+                    b.HasKey("CountryID");
+
+                    b.HasIndex("GeoZoneID");
 
                     b.ToTable("Countries");
                 });
 
-            modelBuilder.Entity("SafetyTourism.Models.Destination", b =>
+            modelBuilder.Entity("SafetyTourism.Models.GeoZone", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("GeoZoneID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("CountryID")
+                    b.Property<string>("GeoZoneName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("GeoZoneID");
+
+                    b.ToTable("GeoZones");
+                });
+
+            modelBuilder.Entity("SafetyTourism.Models.OutBreak", b =>
+                {
+                    b.Property<int>("OutBreakID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GeoZoneID")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("ID");
+                    b.Property<int>("VirusID")
+                        .HasColumnType("int");
 
-                    b.HasIndex("CountryID");
+                    b.HasKey("OutBreakID");
 
-                    b.ToTable("Destinations");
+                    b.HasIndex("GeoZoneID");
+
+                    b.HasIndex("VirusID");
+
+                    b.ToTable("OutBreaks");
                 });
 
-            modelBuilder.Entity("SafetyTourism.Models.Disease", b =>
+            modelBuilder.Entity("SafetyTourism.Models.Recomendation", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Desc")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Recommendation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Diseases");
-                });
-
-            modelBuilder.Entity("SafetyTourism.Models.Report", b =>
-                {
-                    b.Property<int>("ID")
+                    b.Property<int>("RecomendationID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -286,35 +289,54 @@ namespace SafetyTourism.Data.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DestinationID")
+                    b.Property<int>("ExpirationDate")
                         .HasColumnType("int");
 
-                    b.Property<int>("DiseaseID")
+                    b.Property<int>("GeoZoneID")
                         .HasColumnType("int");
 
-                    b.Property<long>("NumInfected")
-                        .HasColumnType("bigint");
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("RecomendationID");
 
-                    b.HasIndex("DestinationID");
+                    b.HasIndex("GeoZoneID");
 
-                    b.HasIndex("DiseaseID");
-
-                    b.ToTable("Reports");
+                    b.ToTable("Recomendations");
                 });
 
-            modelBuilder.Entity("SafetyTourism.Models.Employee", b =>
+            modelBuilder.Entity("SafetyTourism.Models.Virus", b =>
+                {
+                    b.Property<int>("VirusID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("VirusName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("VirusID");
+
+                    b.ToTable("Viruses");
+                });
+
+            modelBuilder.Entity("SafetyTourism.Models.User", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Employee");
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("ProfilePicture")
+                        .HasColumnType("varbinary(max)");
+
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -368,41 +390,52 @@ namespace SafetyTourism.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SafetyTourism.Models.Destination", b =>
+            modelBuilder.Entity("SafetyTourism.Models.Country", b =>
                 {
-                    b.HasOne("SafetyTourism.Models.Country", "Country")
+                    b.HasOne("SafetyTourism.Models.GeoZone", "GeoZone")
                         .WithMany()
-                        .HasForeignKey("CountryID")
+                        .HasForeignKey("GeoZoneID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Country");
+                    b.Navigation("GeoZone");
                 });
 
-            modelBuilder.Entity("SafetyTourism.Models.Report", b =>
+            modelBuilder.Entity("SafetyTourism.Models.OutBreak", b =>
                 {
-                    b.HasOne("SafetyTourism.Models.Destination", "Destination")
+                    b.HasOne("SafetyTourism.Models.GeoZone", "GeoZone")
                         .WithMany()
-                        .HasForeignKey("DestinationID")
+                        .HasForeignKey("GeoZoneID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SafetyTourism.Models.Disease", "Disease")
+                    b.HasOne("SafetyTourism.Models.Virus", "Virus")
                         .WithMany()
-                        .HasForeignKey("DiseaseID")
+                        .HasForeignKey("VirusID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Destination");
+                    b.Navigation("GeoZone");
 
-                    b.Navigation("Disease");
+                    b.Navigation("Virus");
                 });
 
-            modelBuilder.Entity("SafetyTourism.Models.Employee", b =>
+            modelBuilder.Entity("SafetyTourism.Models.Recomendation", b =>
+                {
+                    b.HasOne("SafetyTourism.Models.GeoZone", "GeoZone")
+                        .WithMany()
+                        .HasForeignKey("GeoZoneID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GeoZone");
+                });
+
+            modelBuilder.Entity("SafetyTourism.Models.User", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithOne()
-                        .HasForeignKey("SafetyTourism.Models.Employee", "Id")
+                        .HasForeignKey("SafetyTourism.Models.User", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
                 });

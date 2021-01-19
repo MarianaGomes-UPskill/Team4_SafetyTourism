@@ -20,11 +20,7 @@ namespace SafetyTourism.Controllers
        
         private readonly string apiBaseUrl;
         private readonly IConfiguration _configure;
-        //public CountriesController(ILogger<HomeController> logger)
-        //{
-        //    _logger = logger;
-
-        //}
+      
         public CountriesController(IConfiguration configuration)
         {
             _configure = configuration;

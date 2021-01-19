@@ -26,11 +26,11 @@ namespace SafetyTourismApi
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services
-                .AddDbContext<WHOContext>(options =>
-                                              options.UseInMemoryDatabase("WHOList"));
-          
-                
+            services.AddDbContext<WHOContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")));
+
+
 
             services.AddCors(options =>
             {

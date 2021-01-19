@@ -24,4 +24,5 @@ namespace SafetyTourismApi.Data
 
         public DbSet<Virus> Viruses { get; set; }
     }
+
 }
