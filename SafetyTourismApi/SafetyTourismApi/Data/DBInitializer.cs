@@ -64,7 +64,8 @@ namespace SafetyTourismApi.Data {
                     new Virus{VirusName="Febre Tifóide"},
                     new Virus{VirusName="Cólera"},
                     new Virus{VirusName="Escarlatina"},
-                    new Virus{VirusName="Obesidade"}
+                    new Virus{VirusName="Obesidade"},
+                    new Virus{VirusName="Am I here?"}
             };
             foreach (Virus v in viruses)
             {

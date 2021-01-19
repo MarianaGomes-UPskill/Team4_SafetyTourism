@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using SafetyTourism.Data;
 using SafetyTourism.Models;
 
@@ -12,40 +17,53 @@ namespace SafetyTourism.Controllers
 {
     public class VirusController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly string apiBaseUrl;
+        private readonly IConfiguration _configure;
 
-        public VirusController(ApplicationDbContext context)
+        public VirusController(IConfiguration configuration)
         {
-            _context = context;
+            _configure = configuration;
+            this.apiBaseUrl = _configure.GetValue<string>("WebAPIBaseUrl");
         }
 
         // GET: Virus
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Viruses.ToListAsync());
+            IEnumerable<Virus> viruses = null;
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44372/api/");
+                var response = client.GetAsync("Viruses");
+                response.Wait();
+                var result = response.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<Virus>>();
+                    readTask.Wait();
+
+                    viruses = readTask.Result;
+                }
+                else
+                {
+                    viruses = Enumerable.Empty<Virus>();
+                    ModelState.AddModelError(string.Empty, "Server error try after some time.");
+                }
+            }
+            return View(viruses);
         }
 
-        // GET: Virus/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Create()
         {
-            if (id == null)
+            var listaVirus = new List<Virus>();
+            using (HttpClient client = new HttpClient())
             {
-                return NotFound();
+                string endpoint = apiBaseUrl + "/Viruses";
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                listaVirus = await response.Content.ReadAsAsync<List<Virus>>();
             }
-
-            var virus = await _context.Viruses
-                .FirstOrDefaultAsync(m => m.VirusID == id);
-            if (virus == null)
-            {
-                return NotFound();
-            }
-
-            return View(virus);
-        }
-
-        // GET: Virus/Create
-        public IActionResult Create()
-        {
             return View();
         }
 
@@ -58,9 +76,39 @@ namespace SafetyTourism.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(virus);
-                await _context.SaveChangesAsync();
+
+                using (var client = new HttpClient())
+                {
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(virus), Encoding.UTF8, "application/json");
+                    string endpoint = apiBaseUrl + "/Viruses/";
+                    var response = await client.PutAsync(endpoint, content);
+                }
                 return RedirectToAction(nameof(Index));
+            }
+            return View(virus);
+        }
+
+        // GET: Virus/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Virus virus;
+
+            using (var client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + "/Viruses/" + id;
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                virus = await response.Content.ReadAsAsync<Virus>();
+            }
+
+            if (virus == null)
+            {
+                return NotFound();
             }
             return View(virus);
         }
@@ -73,7 +121,15 @@ namespace SafetyTourism.Controllers
                 return NotFound();
             }
 
-            var virus = await _context.Viruses.FindAsync(id);
+            Virus virus;
+            using (var client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + "/Viruses/" + id;
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                virus = await response.Content.ReadAsAsync<Virus>();
+            }
+
             if (virus == null)
             {
                 return NotFound();
@@ -81,11 +137,8 @@ namespace SafetyTourism.Controllers
             return View(virus);
         }
 
-        // POST: Virus/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Edit(int id, [Bind("VirusID,VirusName")] Virus virus)
         {
             if (id != virus.VirusID)
@@ -93,28 +146,23 @@ namespace SafetyTourism.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) { 
+            
+            using (var client = new HttpClient())
             {
-                try
-                {
-                    _context.Update(virus);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!VirusExists(virus.VirusID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                StringContent content = new StringContent(JsonConvert.SerializeObject(virus), Encoding.UTF8, "application/json");
+                string endpoint = apiBaseUrl + "/Viruses/" + id;
+                var response = await client.PutAsync(endpoint, content);
+            }
+            return RedirectToAction(nameof(Index));
             }
             return View(virus);
         }
+
+
+        // POST: Virus/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 
         // GET: Virus/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -124,13 +172,20 @@ namespace SafetyTourism.Controllers
                 return NotFound();
             }
 
-            var virus = await _context.Viruses
-                .FirstOrDefaultAsync(m => m.VirusID == id);
+            Virus virus;
+
+            using (var client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + "/Viruses/" + id;
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                virus = await response.Content.ReadAsAsync<Virus>();
+            }
+
             if (virus == null)
             {
                 return NotFound();
             }
-
             return View(virus);
         }
 
@@ -139,15 +194,17 @@ namespace SafetyTourism.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var virus = await _context.Viruses.FindAsync(id);
-            _context.Viruses.Remove(virus);
-            await _context.SaveChangesAsync();
+           using (var client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + "/Viruses/" + id;
+                var response = await client.DeleteAsync(endpoint);
+            }
             return RedirectToAction(nameof(Index));
         }
-
-        private bool VirusExists(int id)
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
         {
-            return _context.Viruses.Any(e => e.VirusID == id);
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
