@@ -20,44 +20,24 @@ namespace SafetyTourism.Controllers
 
         private readonly string apiBaseUrl;
         private readonly IConfiguration _configure;
-        //public CountriesController(ILogger<HomeController> logger)
-        //{
-        //    _logger = logger;
-
-        //}
+ 
         public OutBreaksController(IConfiguration configuration)
         {
             _configure = configuration;
             apiBaseUrl = _configure.GetValue<string>("WebAPIBaseUrl");
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            IEnumerable<OutBreak> outBreaks = null;
-
+            
+            var listaOutbreaks = new  List <OutBreak>();
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://localhost:44372/api/");
-                // Get all records
-                var response = client.GetAsync("OutBreaks");
-                response.Wait();
-                //To store result of web api response.
-                var result = response.Result;
-                //If success received   
-                if (result.IsSuccessStatusCode)
-                {
-                    var readTask = result.Content.ReadAsAsync<IList<OutBreak>>();
-                    readTask.Wait();
-
-                    outBreaks = readTask.Result;
-                }
-                else
-                {
-                    //Error response received   
-                    outBreaks = Enumerable.Empty<OutBreak>();
-                    ModelState.AddModelError(string.Empty, "Server error try after some time.");
-                }
+                string endpoint = apiBaseUrl + "/OutBreaks";
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                listaOutbreaks = await response.Content.ReadAsAsync<List<OutBreak>>();
             }
-            return View(outBreaks);
+            return View(listaOutbreaks);
         }
 
 
