@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SafetyTourismApi.Data;
 using SafetyTourismApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
-namespace SafetyTourismApi.Controllers
-{
+namespace SafetyTourismApi.Controllers {
+
     [Route("api/Viruses")]
     [ApiController]
     public class VirusesController : ControllerBase
@@ -29,10 +30,11 @@ namespace SafetyTourismApi.Controllers
         }
 
         // GET: api/Viruses/5
+        //[AllowAnonymous] //Authorize to be accessible by anyone
         [HttpGet("{id}")]
         public async Task<ActionResult<Virus>> GetVirus(int id)
         {
-            var virus = await _context.Viruses.FindAsync(id);
+            var virus = await _context.Viruses.FirstOrDefaultAsync(v => v.VirusID.Equals(id));
 
             return virus == null ? NotFound() : (ActionResult<Virus>)virus;
         }
@@ -40,32 +42,29 @@ namespace SafetyTourismApi.Controllers
         // PUT: api/Viruses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVirus(int id, Virus virus)
-        {
-            if (id != virus.VirusID)
-            {
+        public async Task<IActionResult> PutVirus(int id, Virus virus) {
+            if (!ModelState.IsValid || !id.Equals(virus.VirusID)) {
                 return BadRequest();
             }
 
             _context.Entry(virus).State = EntityState.Modified;
 
-            try
+            try 
             {
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
+            } 
+            catch (DbUpdateConcurrencyException) 
             {
-                if (!VirusExists(id))
-                {
+                if (!VirusExists(id)) 
+                { 
                     return NotFound();
-                }
-                else
+                } 
+                else 
                 {
                     throw;
                 }
             }
-
-            return NoContent();
+            return CreatedAtAction(nameof(GetViruses), new { id = virus.VirusID }, virus);
         }
 
         // POST: api/Viruses
@@ -73,6 +72,9 @@ namespace SafetyTourismApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Virus>> PostVirus(Virus virus)
         {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
             _context.Viruses.Add(virus);
             await _context.SaveChangesAsync();
 
@@ -101,3 +103,35 @@ namespace SafetyTourismApi.Controllers
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        // DELETE: api/pais/5
+//        [HttpDelete("{cod}")]
+//        public async Task<IActionResult> DeleteCountry(string cod) {
+//            var country = await _context.Countries.FindAsync(cod);
+//            if (country == null) {
+//                return NotFound();
+//            }
+
+//            _context.Countries.Remove(country);
+//            await _context.SaveChangesAsync();
+
+//            return NoContent();
+//        }
+
+//        private bool countryExists(string cod) {
+//            return _context.Countries.Any(e => e.CountryCode.Equals(cod));
+//        }
+//    }
+//}
