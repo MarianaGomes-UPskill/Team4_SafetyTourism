@@ -1,206 +1,231 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using SafetyTourism.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SafetyTourism.Models;
+
 
 namespace SafetyTourism.Controllers
 {
     public class OutBreaksController : Controller
     {
-        private readonly ApplicationDbContext _context;
 
-        public OutBreaksController(ApplicationDbContext context)
+        private readonly string apiBaseUrl;
+        private readonly IConfiguration _configure;
+ 
+        public OutBreaksController(IConfiguration configuration)
         {
-            _context = context;
+            _configure = configuration;
+            apiBaseUrl = _configure.GetValue<string>("WebAPIBaseUrl");
         }
-
-        // GET: OutBreaks
-        //public async Task<IActionResult> Index()
-        //{
-        //    var applicationDbContext = _context.OutBreaks.Include(o => o.Virus).Include(g => g.GeoZone);
-        //    return View(await applicationDbContext.ToListAsync());
-        //}
-
-        public async Task<IActionResult> Index(string sortOrder, string searchString) {
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewData["VirusSortParm"] = sortOrder == "virus" ? "virus_desc" : "virus";
-            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
-            ViewData["ActiveSortParm"] = sortOrder == "Active" ? "NonActive" : "Active";
-
+        public async Task<IActionResult> Index()
+        {
             
-            var outbreaks = _context.OutBreaks.Include(g => g.GeoZone).Include(v => v.Virus).AsQueryable();
-            switch (sortOrder) {
-                case "name_desc":
-                    outbreaks = outbreaks.OrderByDescending(g => g.GeoZone.GeoZoneName);
-                    break;
-                case "virus_desc":
-                    outbreaks = outbreaks.OrderByDescending(v => v.Virus.VirusName);
-                    break;
-                case "virus":
-                    outbreaks = outbreaks.OrderBy(v => v.Virus.VirusName);
-                    break;
-                case "Date":
-                    outbreaks = outbreaks.OrderBy(d => d.StartDate);
-                    break;
-                case "date_desc":
-                    outbreaks = outbreaks.OrderByDescending(d => d.StartDate);
-                    break;
-                case "Active":
-                    outbreaks = outbreaks.Where(d => d.EndDate == null);
-                    break;
-                case "NonActive":
-                    outbreaks = outbreaks.Where(d => d.EndDate != null);
-                    break;
-                default:
-                    outbreaks = outbreaks.OrderBy(g => g.GeoZone.GeoZoneName);
-                    break;
+            var listaOutbreaks = new  List <OutBreak>();
+            using (var client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + "/OutBreaks";
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                listaOutbreaks = await response.Content.ReadAsAsync<List<OutBreak>>();
             }
-            return View(await outbreaks.AsNoTracking().ToListAsync());
+            return View(listaOutbreaks);
         }
 
 
+        public async Task<IActionResult> Create()
+        {
+            var listaZonas = new List<GeoZone>();
+            using (HttpClient client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + "/GeoZones";
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                listaZonas = await response.Content.ReadAsAsync<List<GeoZone>>();
+            }
+            ViewData["GeoZoneID"] = new SelectList(listaZonas, "GeoZoneID", "GeoZoneName");
+           
+            var listaVirus = new List<Virus>();
+            using (HttpClient client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + "/Viruses";
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                listaVirus = await response.Content.ReadAsAsync<List<Virus>>();
+            }
+            ViewData["VirusID"] = new SelectList(listaVirus, "VirusID", "VirusName");
+          
+            return View();
+        }
+        public async Task<IActionResult> CreateVirus()
+        {
+            var listaVirus = new List<Virus>();
+            using (HttpClient client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + "/Viruses";
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                listaVirus = await response.Content.ReadAsAsync<List<Virus>>();
+            }
+            ViewData["VirusID"] = new SelectList(listaVirus, "VirusID", "VirusName");
+          
+            return View();
+        }
+        // POST: outBreaks/create
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("OutBreakID,VirusID,GeoZoneID,StartDate,EndDate")] OutBreak outbreak)
+        {
+            if (ModelState.IsValid)
+            {
+                using (HttpClient client = new HttpClient())
+                {
 
-        // GET: OutBreaks/Details/5
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(outbreak), Encoding.UTF8, "application/json");
+                    string endpoint = apiBaseUrl + "/OutBreaks";
+                    var response = await client.PostAsync(endpoint, content);
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(outbreak);
+        }
+
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            
-            var outBreak = await _context.OutBreaks
-                .Include(o => o.Virus)
-                .Include(g => g.GeoZone)
-                .FirstOrDefaultAsync(m => m.OutBreakID == id);
+            OutBreak outbreak;
+            using (var client = new HttpClient())
+            {
 
-            if (outBreak == null)
+                string endpoint = apiBaseUrl + "/OutBreaks/" + id;
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                outbreak = await response.Content.ReadAsAsync<OutBreak>();
+            }
+            if (outbreak == null)
             {
                 return NotFound();
             }
-            return View(outBreak);
+            return View(outbreak);
         }
 
-        // GET: OutBreaks/Create
-        public IActionResult Create()
-        {
-            ViewData["VirusID"] = new SelectList(_context.Viruses, "VirusID", "VirusName");
-            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName");
-            return View();
-        }
 
-        // POST: OutBreaks/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OutBreakID,VirusID,GeoZoneID,StartDate,EndDate")] OutBreak outBreak)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(outBreak);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["VirusID"] = new SelectList(_context.Viruses, "VirusID", "VirusName", outBreak.VirusID);
-            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName");
-            return View(outBreak);
-        }
-
-        // GET: OutBreaks/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
+            OutBreak outbreak;
+            using (var client = new HttpClient())
+            {
 
-            var outBreak = await _context.OutBreaks.FindAsync(id);
-            if (outBreak == null)
+                string endpoint = apiBaseUrl + "/OutBreaks/" + id;
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                outbreak = await response.Content.ReadAsAsync<OutBreak>();
+            }
+            if (outbreak == null)
             {
                 return NotFound();
             }
-            ViewData["VirusID"] = new SelectList(_context.Viruses, "VirusID", "VirusName", outBreak.VirusID);
-            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName", outBreak.GeoZoneID);
-            return View(outBreak);
-        }
+            var listaZonas = new List<GeoZone>();
+            using (var client = new HttpClient())
+            {
+
+                string endpoint = apiBaseUrl + "/GeoZones";
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                listaZonas = await response.Content.ReadAsAsync<List<GeoZone>>();
+                ViewData["GeoZoneID"] = new SelectList(listaZonas, "GeoZoneID", "GeoZoneName");
+            }
+       
+            var listaVirus = new List<Virus>();
+            using (HttpClient client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + "/Viruses";
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                listaVirus = await response.Content.ReadAsAsync<List<Virus>>();
+            }
+            ViewData["VirusID"] = new SelectList(listaVirus, "VirusID", "VirusName");
      
-        // POST: OutBreaks/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+            return View(outbreak);
+        }
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OutBreakID,VirusID,GeoZoneID,StartDate,EndDate")] OutBreak outBreak)
+
+        public async Task<IActionResult> Edit(int id, [Bind("OutBreakID,VirusID,GeoZoneID,StartDate,EndDate")] OutBreak outbreak)
         {
-            if (id != outBreak.OutBreakID)
+            if (id != outbreak.OutBreakID)
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
-                try
+                using (HttpClient client = new HttpClient())
                 {
-                    _context.Update(outBreak);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OutBreakExists(outBreak.OutBreakID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(outbreak), Encoding.UTF8, "application/json");
+                    string endpoint = apiBaseUrl + "/OutBreaks/" + id;
+                    var response = await client.PutAsync(endpoint, content);
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["VirusID"] = new SelectList(_context.Viruses, "VirusID", "VirusName", outBreak.VirusID);
-            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName", outBreak.GeoZoneID);
-            return View(outBreak);
+            return View(outbreak);
         }
 
-        // GET: OutBreaks/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
+            OutBreak outbreak;
+            using (HttpClient client = new HttpClient())
+            {
 
-            var outBreak = await _context.OutBreaks
-                .Include(o => o.Virus)
-                .FirstOrDefaultAsync(m => m.OutBreakID == id);
-            if (outBreak == null)
+                string endpoint = apiBaseUrl + "/OutBreaks/" + id;
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                outbreak = await response.Content.ReadAsAsync<OutBreak>();
+            }
+            if (outbreak == null)
             {
                 return NotFound();
             }
-            ViewData["VirusID"] = new SelectList(_context.Viruses, "VirusID", "VirusName", outBreak.VirusID);
-            ViewData["GeoZoneID"] = new SelectList(_context.GeoZones, "GeoZoneID", "GeoZoneName", outBreak.GeoZoneID);
-            return View(outBreak);
+            return View(outbreak);
         }
-        
 
-        // POST: OutBreaks/Delete/5
+        // POST: outBreaks/delete/pt
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            var outBreak = await _context.OutBreaks.FindAsync(id);
-            _context.OutBreaks.Remove(outBreak);
-            await _context.SaveChangesAsync();
+            using (HttpClient client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + "/OutBreaks/" + id;
+                var response = await client.DeleteAsync(endpoint);
+            }
             return RedirectToAction(nameof(Index));
         }
 
-        private bool OutBreakExists(int id)
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
         {
-            return _context.OutBreaks.Any(e => e.OutBreakID == id);
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+      
+       
     }
 }

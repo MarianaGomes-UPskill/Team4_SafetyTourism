@@ -30,37 +30,22 @@ namespace SafetyTourism.Controllers
             _configure = configuration;
             apiBaseUrl = _configure.GetValue<string>("WebAPIBaseUrl");
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            IEnumerable<Country> countries = null;
 
+            var listaCountries = new List<Country>();
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://localhost:44372/api/");
-                // Get all records
-                var response = client.GetAsync("Countries");
-                response.Wait();
-                //To store result of web api response.
-                var result = response.Result;
-                //If success received   
-                if (result.IsSuccessStatusCode)
-                {
-                    var readTask = result.Content.ReadAsAsync<IList<Country>>();
-                    readTask.Wait();
-
-                    countries = readTask.Result;
-                }
-                else
-                {
-                    //Error response received   
-                    countries = Enumerable.Empty<Country>();
-                    ModelState.AddModelError(string.Empty, "Server error try after some time.");
-                }
+                string endpoint = apiBaseUrl + "/Countries";
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                listaCountries = await response.Content.ReadAsAsync<List<Country>>();
             }
-            return View(countries);
+            return View(listaCountries);
         }
 
-    
+
+
         public async Task<IActionResult> Create()
         {
             var listaZonas = new List<GeoZone>();
