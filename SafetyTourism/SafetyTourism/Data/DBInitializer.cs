@@ -12,6 +12,11 @@ namespace SafetyTourism.Data
         {
             context.Database.EnsureCreated();
 
+            if (context.GeoZones.Any())
+            {
+                return; //DB is seeded
+            }
+
 
             // Look for any destinations.
             var geozones = new GeoZone[]
