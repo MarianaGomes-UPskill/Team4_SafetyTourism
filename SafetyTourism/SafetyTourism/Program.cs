@@ -15,7 +15,7 @@ namespace SafetyTourism
         {
             var host = CreateHostBuilder(args).Build();
 
-            //CreateDbIfNotExists(host);
+            CreateDbIfNotExists(host);
 
             using (var scope = host.Services.CreateScope())
             {

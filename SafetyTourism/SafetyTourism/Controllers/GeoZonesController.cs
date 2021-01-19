@@ -1,29 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using SafetyTourism.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SafetyTourism.Models;
 
 namespace SafetyTourism.Controllers
 {
     public class GeoZonesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly string apiBaseUrl;
+        private readonly IConfiguration _configure;
 
-        public GeoZonesController(ApplicationDbContext context)
+        public GeoZonesController(IConfiguration configuration)
         {
-            _context = context;
+            _configure = configuration;
+            apiBaseUrl = _configure.GetValue<string>("WebAPIBaseUrl");
         }
 
         // GET: GeoZones
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.GeoZones.ToListAsync());
+            IEnumerable<GeoZone> geoZones = null;
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44372/api/");
+                // Get all records
+                var response = client.GetAsync("GeoZones");
+                response.Wait();
+                //To store result of web api response.
+                var result = response.Result;
+                //If success received   
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<GeoZone>>();
+                    readTask.Wait();
+
+                    geoZones = readTask.Result;
+                }
+                else
+                {
+                    //Error response received   
+                    geoZones = Enumerable.Empty<GeoZone>();
+                    ModelState.AddModelError(string.Empty, "Server error try after some time.");
+                }
+            }
+            return View(geoZones);
         }
+
 
         // GET: GeoZones/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -33,33 +65,53 @@ namespace SafetyTourism.Controllers
                 return NotFound();
             }
 
-            var geoZone = await _context.GeoZones
-                .FirstOrDefaultAsync(m => m.GeoZoneID == id);
-            if (geoZone == null)
+            GeoZone geozone;
+            using (var client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + "/Geozones/" + id;
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                geozone = await response.Content.ReadAsAsync<GeoZone>();
+            }
+
+               
+            if (geozone == null)
             {
                 return NotFound();
             }
 
-            return View(geoZone);
+            return View(geozone);
         }
 
         // GET: GeoZones/Create
-        public IActionResult Create()
+        public async Task <IActionResult> Create()
         {
+            var listaZonas = new List<GeoZone>();
+            using (HttpClient client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + "/GeoZones";
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                listaZonas = await response.Content.ReadAsAsync<List<GeoZone>>();
+            }
             return View();
         }
 
         // POST: GeoZones/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
-        [ValidateAntiForgeryToken]
+     
         public async Task<IActionResult> Create([Bind("GeoZoneID,GeoZoneName")] GeoZone geoZone)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(geoZone);
-                await _context.SaveChangesAsync();
+                using (HttpClient client = new HttpClient())
+                {
+
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(geoZone), Encoding.UTF8, "application/json");
+                    string endpoint = apiBaseUrl + "/GeoZones";
+                    var response = await client.PostAsync(endpoint, content);
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View(geoZone);
@@ -72,20 +124,26 @@ namespace SafetyTourism.Controllers
             {
                 return NotFound();
             }
+            GeoZone geozone;
+            using (var client = new HttpClient())
+            {
 
-            var geoZone = await _context.GeoZones.FindAsync(id);
-            if (geoZone == null)
+                string endpoint = apiBaseUrl + "/GeoZones/" + id;
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                geozone = await response.Content.ReadAsAsync<GeoZone>();
+            }
+
+            if (geozone == null)
             {
                 return NotFound();
             }
-            return View(geoZone);
+            return View(geozone);
         }
 
-        // POST: GeoZones/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Edit(int id, [Bind("GeoZoneID,GeoZoneName")] GeoZone geoZone)
         {
             if (id != geoZone.GeoZoneID)
@@ -95,37 +153,34 @@ namespace SafetyTourism.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                using (HttpClient client = new HttpClient())
                 {
-                    _context.Update(geoZone);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!GeoZoneExists(geoZone.GeoZoneID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(geoZone), Encoding.UTF8, "application/json");
+                    string endpoint = apiBaseUrl + "/geozones/" + id;
+                    var response = await client.PutAsync(endpoint, content);
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(geoZone);
         }
 
-        // GET: GeoZones/Delete/5
+        
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
+            GeoZone geoZone;
+            using (HttpClient client = new HttpClient())
+            {
 
-            var geoZone = await _context.GeoZones
-                .FirstOrDefaultAsync(m => m.GeoZoneID == id);
+                string endpoint = apiBaseUrl + "/GeoZones/" + id;
+                var response = await client.GetAsync(endpoint);
+                response.EnsureSuccessStatusCode();
+                geoZone = await response.Content.ReadAsAsync<GeoZone>();
+            }
+
             if (geoZone == null)
             {
                 return NotFound();
@@ -139,15 +194,18 @@ namespace SafetyTourism.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var geoZone = await _context.GeoZones.FindAsync(id);
-            _context.GeoZones.Remove(geoZone);
-            await _context.SaveChangesAsync();
+            using (HttpClient client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + "/GeoZones/" + id;
+                var response = await client.DeleteAsync(endpoint);
+            }
             return RedirectToAction(nameof(Index));
         }
 
-        private bool GeoZoneExists(int id)
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
         {
-            return _context.GeoZones.Any(e => e.GeoZoneID == id);
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
