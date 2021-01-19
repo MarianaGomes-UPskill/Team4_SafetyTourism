@@ -65,20 +65,7 @@ namespace SafetyTourism.Controllers
           
             return View();
         }
-        public async Task<IActionResult> CreateVirus()
-        {
-            var listaVirus = new List<Virus>();
-            using (HttpClient client = new HttpClient())
-            {
-                string endpoint = apiBaseUrl + "/Viruses";
-                var response = await client.GetAsync(endpoint);
-                response.EnsureSuccessStatusCode();
-                listaVirus = await response.Content.ReadAsAsync<List<Virus>>();
-            }
-            ViewData["VirusID"] = new SelectList(listaVirus, "VirusID", "VirusName");
-          
-            return View();
-        }
+
         // POST: outBreaks/create
         [HttpPost]
         public async Task<IActionResult> Create([Bind("OutBreakID,VirusID,GeoZoneID,StartDate,EndDate")] OutBreak outbreak)
