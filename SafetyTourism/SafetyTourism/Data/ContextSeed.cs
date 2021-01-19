@@ -27,6 +27,15 @@ namespace SafetyTourism.Data
                 EmailConfirmed = true,
                 
             };
+            var defaultUser1 = new User
+            {
+                UserName = "expert@expert.com",
+                Email = "expert@expert.com",
+                FirstName = "Expert",
+                LastName = "Expert",
+                EmailConfirmed = true,
+
+            };
 
             if (userManager.Users.All(u => u.Id != defaultUser.Id))
             {
@@ -35,7 +44,9 @@ namespace SafetyTourism.Data
                 {
                     await userManager.CreateAsync(defaultUser, "Admin123!");
                     await userManager.AddToRoleAsync(defaultUser, "Admin");
-                   
+                    await userManager.CreateAsync(defaultUser1, "expert");
+                    await userManager.AddToRoleAsync(defaultUser1, "Expert");
+
                 }
             }
         }

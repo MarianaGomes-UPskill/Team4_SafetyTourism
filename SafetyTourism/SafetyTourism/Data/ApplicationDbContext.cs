@@ -14,11 +14,6 @@ namespace SafetyTourism.Data
             : base(options)
         {
         }
-        public DbSet<GeoZone> GeoZones { get; set; }
-        public DbSet<Virus> Viruses { get; set; }
-        public DbSet<Country> Countries { get; set; }
-        public DbSet<OutBreak> OutBreaks { get; set; }
-        public DbSet<Recomendation> Recomendations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
