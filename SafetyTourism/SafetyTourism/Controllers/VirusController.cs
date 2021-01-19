@@ -81,7 +81,7 @@ namespace SafetyTourism.Controllers
                 {
                     StringContent content = new StringContent(JsonConvert.SerializeObject(virus), Encoding.UTF8, "application/json");
                     string endpoint = apiBaseUrl + "/Viruses/";
-                    var response = await client.PutAsync(endpoint, content);
+                    var response = await client.PostAsync(endpoint, content);
                 }
                 return RedirectToAction(nameof(Index));
             }
