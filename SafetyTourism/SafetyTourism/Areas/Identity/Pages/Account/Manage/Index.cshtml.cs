@@ -23,7 +23,7 @@ namespace SafetyTourism.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
-        public string Username { get; set; }
+      
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -33,6 +33,9 @@ namespace SafetyTourism.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
+            [DataType(DataType.Text)]
+            [Display(Name = "User Name")]
+            public string Username { get; set; }
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -42,11 +45,12 @@ namespace SafetyTourism.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-            Username = userName;
+            
+            
 
             Input = new InputModel
             {
+                Username = userName,
                 PhoneNumber = phoneNumber
             };
         }
@@ -76,7 +80,16 @@ namespace SafetyTourism.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
-
+            var userName = await _userManager.GetUserNameAsync(user);
+            if (Input.Username != userName)
+            {
+                var setuserName = await _userManager.SetUserNameAsync(user, Input.Username );
+                if (!setuserName.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    return RedirectToPage();
+                }
+            }
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
