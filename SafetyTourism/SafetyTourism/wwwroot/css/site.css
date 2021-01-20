@@ -3,75 +3,79 @@ for details on configuring this project to bundle and minify static web assets. 
 
 
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: white;
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
+
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .border-top {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
 }
+
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
 }
+
 .tablehover:hover {
-    background-color: cornsilk;
+    background-color: #fff8dc54;
     -moz-box-shadow: inherit;
     -webkit-box-shadow: inherit;
     box-shadow: inherit;
@@ -81,10 +85,89 @@ body {
     font-style: italic;
 }
 
-tbody tr:hover {
-    background: red;
-    opacity: 0.2;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+.header h2 {
+    font-size: 5em;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1em;
+    text-transform: uppercase;
+}
+
+.header h3 {
+    font-size: 2em;
+    font-weight: 400;
+    color: #fff;
+    line-height: 1em;
+    text-transform: uppercase;
+}
+
+.header p {
+    padding: 5px 0px;
+    z-index: 1000;
+    align-items: flex-start;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    line-height: 1em;
+}
+
+.main-btn {
+    display: inline-block;
+    font-size: 1em;
+    background: #fff;
+    padding: 10px 30px;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 10px;
+    color: #111;
+    letter-spacing: 2px;
+    transition: 0.2s;
+}
+
+    .main-btn:hover {
+        letter-spacing: 6px;
+        text-decoration: none;
+        color: #001721;
+    }
+
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    background-color: #001721;
     color: white;
 }
 
 
+.tablehover:hover {
+    background-color: #fff8dc54;
+    -moz-box-shadow: inherit;
+    -webkit-box-shadow: inherit;
+    box-shadow: inherit;
+    text-shadow: inherit;
+    cursor: pointer;
+    text-decoration: double;
+    font-style: italic;
+}
+
+h1 h2 h3 h4 h5 h6 p {
+    color: white;
+}
+
+.table {
+    color: white;
+}
+
+.card {
+    color: #001721;
+}
