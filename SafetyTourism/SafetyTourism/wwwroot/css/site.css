@@ -81,4 +81,10 @@ body {
     font-style: italic;
 }
 
+tbody tr:hover {
+    background: red;
+    opacity: 0.2;
+    color: white;
+}
+
 
