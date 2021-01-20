@@ -21,7 +21,9 @@
             @Html.DisplayNameFor(model => model.CreationDate)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreationDate)
+             <option>
+            @Html.ValueFor(model => model.CreationDate, "{0:dd/MM/yyyy}")
+             </option>
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ExpirationDate)

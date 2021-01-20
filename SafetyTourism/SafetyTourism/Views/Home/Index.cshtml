@@ -34,7 +34,7 @@
                 @Html.DisplayFor(modelItem => item.GeoZone.GeoZoneName)
             </td>
             <td style="text-align:center;">
-                @Html.DisplayFor(modelItem => item.StartDate)
+                @Html.ValueFor(modelItem => item.StartDate, "{0:dd/MM/yyyy}")
             </td>
             <td style="text-align:right;">
                 @Html.DisplayFor(modelItem => item.Virus.VirusName)
