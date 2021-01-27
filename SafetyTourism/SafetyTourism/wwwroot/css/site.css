@@ -90,7 +90,7 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+    font-family: Calibri;
 }
 
 
@@ -115,7 +115,6 @@ body {
     z-index: 1000;
     align-items: flex-start;
     color: white;
-    font-family: 'Poppins', sans-serif;
     font-weight: 400;
     line-height: 1em;
 }
@@ -170,4 +169,21 @@ h1 h2 h3 h4 h5 h6 p {
 
 .card {
     color: #001721;
+}
+
+/*.nav-link.text-dark {
+    background: blue !important;
+}*/
+
+/*.nav-link.text-dark:hover {
+    background: grey !important;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    border-radius: .25rem;
+}*/
+
+.teste:hover {
+    background: grey !important;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    border-radius: .25rem;
+    color: white !important;
 }

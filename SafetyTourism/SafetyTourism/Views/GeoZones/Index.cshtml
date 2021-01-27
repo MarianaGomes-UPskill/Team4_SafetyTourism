@@ -16,13 +16,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.GeoZoneName)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td class="tablehover" onclick="location.href = '@Url.Action("Details", new { id=item.GeoZoneID })'">
+        <tr class="tablehover">
+            <td onclick="location.href = '@Url.Action("Details", new { id=item.GeoZoneID })'">
                 @Html.DisplayFor(modelItem => item.GeoZoneName)
             </td>
         </tr>
